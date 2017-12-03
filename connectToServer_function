@@ -1,0 +1,18 @@
+void Client::connectToServer() {
+    // Init socket
+    this->clientSocket = socket(AF_INET, SOCK_STREAM, 0);
+    if (clientSocket >= 0) {
+        // Memset the connection details
+        memset(&this->connectionDetails, 0, sizeof(this->connectionDetails));
+        this->connectionDetails.sin_family = AF_INET;
+        this->connectionDetails.sin_addr.s_addr = inet_addr(serverIP.c_str());
+        this->connectionDetails.sin_port = htons(serverPort);
+        // connectToServer to a server
+        if (connect(this->clientSocket,
+                   (struct sockaddr *) &this->connectionDetails,
+                    sizeof (this->connectionDetails)) >= 0)
+            cout << ">> Successfully opened socket." << endl;
+    } else {
+        throw ">> Failure: opening socket.";
+    }
+}
