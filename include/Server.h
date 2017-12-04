@@ -16,7 +16,10 @@ public:
 private:
 	int port;
 	int serverSocket; // the socket's file descriptor
-	void handleClient(int clientSocket);
+	void handleTwoClients(int clientSocket, int clientSocket2);
+	//CHANGE
+	void handleOneClient(int clientSocket);
+
 	int calc(int arg1, const char op, int arg2) const;
 };
 
