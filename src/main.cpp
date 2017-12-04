@@ -14,7 +14,7 @@ using namespace std;
 int main() {
 	Server server(8000);//read from file
 	try {
-		server.start();
+	  server.start();
 	} catch (const char *msg) {
 		cout << "Cannot start server. Reason: " << msg << endl;
 		exit(-1);
