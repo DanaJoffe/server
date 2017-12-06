@@ -8,18 +8,22 @@
 #ifndef SERVER_H_
 #define SERVER_H_
 
+
+enum Input {NO_MOVES, HAS_MOVE, END};
+
 class Server {
 public:
 	Server(int port);
 	void start();
 	void stop();
-private:
-	int port;
 	int serverSocket; // the socket's file descriptor
 	void handleTwoClients(int clientSocket, int clientSocket2);
-	//CHANGE
-	void handleOneClient(int clientSocket);
 
+	//CHANGE
+	bool handleOneClient(int clientSocket, int waitingClient);
+
+private:
+	int port;
 	int calc(int arg1, const char op, int arg2) const;
 };
 
