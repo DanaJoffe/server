@@ -14,7 +14,7 @@
 #include <iostream>
 #include <stdio.h>
 using namespace std;
-#define MAX_CONNECTED_CLIENTS 10
+#define MAX_CONNECTED_CLIENTS 2
 
 
 Server::Server(int port): port(port), serverSocket(0) {
@@ -58,9 +58,18 @@ void Server::start() {
 			throw "Error on accept";
 
 		int color = 1;
-		int n1 = write(clientSocket, &color, sizeof(color)); // n needs to be checked
+		int n = write(clientSocket, &color, sizeof(color));
+		if (n == -1) {
+			cout << "Error writing color to socket" << endl;
+			return;
+		}
+
 		color = 2;
-		n1 = write(clientSocket2, &color, sizeof(color)); // n needs to be checked
+		n = write(clientSocket2, &color, sizeof(color));
+		if (n == -1) {
+			cout << "Error writing color to socket" << endl;
+			return;
+		}
 
 		handleTwoClients(clientSocket, clientSocket2);//CHANGE
 
@@ -74,27 +83,18 @@ void Server::start() {
 // Handle requests from a specific client
 void Server::handleTwoClients(int clientSocket, int clientSocket2) {
 	while (true) {
-		int result = 0;
-
 		bool isClient1Connected = handleOneClient(clientSocket, clientSocket2); //return msg
-
 		if (!isClient1Connected) {
 			return;
 		}
-
 		cout << "turn passes to client 2"<<endl;
-
 		bool isClient2Connected = handleOneClient(clientSocket2, clientSocket);
-
 		if (!isClient2Connected) {
 			return;
 		}
-
 		cout << "turn passes to player 1"<<endl;
-
 	}
 }
-
 
 bool Server::handleOneClient(int clientSocket, int waitingClient) {
 	int status;
@@ -163,39 +163,6 @@ bool Server::handleOneClient(int clientSocket, int waitingClient) {
 		cout << "Finish game- closing clients' sockets" << endl;
 		return false;
 	}
-//
-//
-//	int arg1, arg2;
-//	char op;
-//	// Read new exercise arguments
-//	int n = read(clientSocket, &arg1, sizeof(arg1));
-//	if (n == -1) {
-//		cout << "Error reading arg1" << endl;
-//		return false;
-//	}
-//	if (n == 0) {
-//		cout << "Client disconnected" << endl;
-//		return false;
-//	}
-//	n = read(clientSocket, &op, sizeof(op));
-//	if (n == -1) {
-//		cout << "Error reading operator" << endl;
-//		return false;
-//	}
-//	n = read(clientSocket, &arg2, sizeof(arg2));
-//	if (n == -1) {
-//		cout << "Error reading arg2" << endl;
-//		return false;
-//	}
-//	cout << "Got exercise: " << arg1 << op << arg2 <<endl;
-//	int result = calc(arg1, op, arg2);
-//	// Write the result back to the client
-//	cout << "send result to client" <<endl;
-//	n = write(clientSocket, &result, sizeof(result));
-//	if (n == -1) {
-//		cout << "Error writing to socket" << endl;
-//		return false;
-//	}
 	return true;
 }
 
@@ -251,21 +218,7 @@ bool Server::handleOneClient(int clientSocket, int waitingClient) {
  *
  */
 
-int Server::calc(int arg1, const char op, int arg2) const {
-	switch (op) {
-	case '+':
-		return arg1 + arg2;
-	case '-':
-		return arg1 - arg2;
-	case '*':
-		return arg1 * arg2;
-	case '/':
-		return arg1 / arg2;
-	default:
-		cout << "Invalid operator" << endl;
-		return 0;
-	}
-}
+
 void Server::stop() {
  close(serverSocket);
 }
