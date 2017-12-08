@@ -17,7 +17,7 @@ using namespace std;
 #define MAX_CONNECTED_CLIENTS 2
 
 
-Server::Server(int port): port(port), serverSocket(0) {
+Server::Server(int port): serverSocket(0), port(port) {
  cout << "Server" << endl;
 }
 void Server::start() {
