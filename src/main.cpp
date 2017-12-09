@@ -1,8 +1,8 @@
 /*
  * main.cpp
  *
- *  Created on: Dec 3, 2017
- *      Author: djoffe
+ * Author1: name & ID: Dana Joffe 312129240
+ * Author2: name & ID: Chaviva Moshavi 322082892
  */
 
 #include "Server.h"
@@ -11,8 +11,9 @@
 #include <fstream>
 using namespace std;
 
-
+//run server
 int main() {
+  //get server port number from file
   int port_num;
   ifstream port_file;
   port_file.open("port_number.txt");
@@ -22,11 +23,15 @@ int main() {
   }
   port_file >> port_num;
   port_file.close();
+  //construct and run server
   Server server(port_num);
   try {
-	server.start();
+    server.start();
   } catch (const char *msg) {
-	cout << "Cannot start server. Reason: " << msg << endl;
-	exit(-1);
+    cout << "Cannot start server. Reason: " << msg << endl;
+    exit(-1);
   }
+  //stop server
+  server.stop();
+  return 0;
 }
