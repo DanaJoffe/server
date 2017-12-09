@@ -1,27 +1,27 @@
 /*
  * Server.cpp
  *
- *  Created on: Dec 3, 2017
- *      Author: djoffe
+ * Author1: name & ID: Dana Joffe 312129240
+ * Author2: name & ID: Chaviva Moshavi 322082892
  */
 
 
-#include "Server.h"
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <unistd.h>
-#include <string.h>
 #include <iostream>
+#include <netinet/in.h>
+#include <poll.h>
+#include "Server.h"
 #include <stdio.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <unistd.h>
 
-#include <poll.h>          // For poll()
 
 using namespace std;
-#define MAX_CONNECTED_CLIENTS 2
+#define MAX_CONNECTED_CLIENTS 10
 
 
-Server::Server(int port): serverSocket(0), port(port) {
- cout << "Server" << endl;
+Server::Server(int port): port(port), serverSocket(0) {
+  cout << "Server" << endl;
 }
 void Server::start() {
 	// Create a socket point
@@ -43,14 +43,16 @@ void Server::start() {
 	// Define the client socket's structures
 	struct sockaddr_in clientAddress;
 	socklen_t clientAddressLen;
-	while (true) {
-		cout << "Waiting for clients connections..." << endl;
-		// Accept a new client connection
-		int clientSocket = accept(serverSocket, (struct sockaddr *)&clientAddress, &clientAddressLen);
-		cout << "Client connected" << endl;
-		if (clientSocket == -1)
-					throw "Error on accept";
 
+	//accept and handle 2 clients
+	while (true) {
+
+		cout << "Waiting for clients' connections..." << endl;
+		// Accept a new client connection
+		int clientSocket1 = accept(serverSocket, (struct sockaddr *)&clientAddress, &clientAddressLen);
+		cout << "Client connected" << endl;
+		if (clientSocket1 == -1)
+					throw "Error on accept";
 
 		cout << "Waiting for one more client..."<<endl;
 		// client 2 connected
@@ -61,7 +63,7 @@ void Server::start() {
 			throw "Error on accept";
 
 		int color = 1;
-		int n = write(clientSocket, &color, sizeof(color));
+		int n = write(clientSocket1, &color, sizeof(color));
 		if (n == -1) {
 			cout << "Error writing color to socket" << endl;
 			return;
@@ -74,28 +76,28 @@ void Server::start() {
 			return;
 		}
 
-		handleTwoClients(clientSocket, clientSocket2);//CHANGE
+		handleTwoClients(clientSocket1, clientSocket2);
 
-		// Close communication with the client
-		close(clientSocket);
+		// Close communication with the clients
+		close(clientSocket1);
 		close(clientSocket2);
 	}
 }
 
 
-// Handle requests from a specific client
-void Server::handleTwoClients(int clientSocket, int clientSocket2) {
+// Handle requests from 2 specific clients
+void Server::handleTwoClients(int clientSocket1, int clientSocket2) {
 	while (true) {
-		bool isClient1Connected = handleOneClient(clientSocket, clientSocket2); //return msg
+	  //handle first client
+	  bool isClient1Connected = handleOneClient(clientSocket1, clientSocket2);
 		if (!isClient1Connected) {
 			return;
 		}
-		cout << "turn passes to client 2"<<endl;
-		bool isClient2Connected = handleOneClient(clientSocket2, clientSocket);
+		//handle second client
+		bool isClient2Connected = handleOneClient(clientSocket2, clientSocket1);
 		if (!isClient2Connected) {
 			return;
 		}
-		cout << "turn passes to player 1"<<endl;
 	}
 }
 
@@ -104,17 +106,53 @@ bool Server::handleOneClient(int clientSocket, int waitingClient) {
 	int row, col;
 	char sep;
 	int n;
+
 	// Read status arguments
 	n = read(clientSocket, &status, sizeof(status));
 	if (n == -1) {
 		cout << "Error reading status" << endl;
 		return false;
-	}
-	if (n == 0) {
+	} else if (n == 0) {
 		cout << "Client disconnected" << endl;
 		return false;
 	}
-	cout << "Got status: " << status <<endl;
+	//get player's move if status is has move
+	if (status == HAS_MOVE) {
+    // Read player's move arguments
+    n = read(clientSocket, &row, sizeof(row));
+    if (n == -1) {
+      cout << "Error reading row" << endl;
+      return false;
+    } else if (n == 0) {
+      cout << "Client disconnected" << endl;
+      return false;
+    }
+    n = read(clientSocket, &sep, sizeof(sep));
+    if (n == -1) {
+      cout << "Error reading separator" << endl;
+      return false;
+    } else  if (n == 0) {
+      cout << "Client disconnected" << endl;
+      return false;
+    }
+    n = read(clientSocket, &col, sizeof(col));
+    if (n == -1) {
+      cout << "Error reading col" << endl;
+      return false;
+    } else  if (n == 0) {
+      cout << "Client disconnected" << endl;
+      return false;
+    }
+	}
+
+  //inform client if other client disconnected
+//  if (is_client_closed(waitingClient)) {
+//    cout << "Client disconnected" << endl;
+//    int a = END;
+//    n = write(clientSocket, &a, sizeof(a));
+//    return false;
+//  }
+
 	//inform other player on current player's status.
 	n = write(waitingClient, &status, sizeof(status));
 	if (n == -1) {
@@ -123,38 +161,19 @@ bool Server::handleOneClient(int clientSocket, int waitingClient) {
 	}
 
 	if (status == NO_MOVES) {
-		cout << "Player has no moves" << endl;
 		return true; //current player is still in the game.
 
 	} else if (status == HAS_MOVE) {
-		// Read move arguments
-		n = read(clientSocket, &row, sizeof(row));
-		if (n == -1) {
-			cout << "Error reading row" << endl;
-			return false;
-		}
-		n = read(clientSocket, &sep, sizeof(sep));
-		if (n == -1) {
-			cout << "Error reading separator" << endl;
-			return false;
-		}
-		n = read(clientSocket, &col, sizeof(col));
-		if (n == -1) {
-			cout << "Error reading col" << endl;
-			return false;
-		}
-		cout << "Player's move is: " << row << ", " << col<< endl;
 
+	  //inform client if other client disconnected
+//		if (is_client_closed(waitingClient)) {
+//			cout << "Client disconnected" << endl;
+//			int a = END;
+//			n = write(clientSocket, &a, sizeof(a));
+//			return false;
+//		}
 
-		//inform other player on current player's move.
-
-		if (is_client_closed(waitingClient)) {
-			cout << "Client disconnected" << endl;
-			int a = END;
-			n = write(clientSocket, &a, sizeof(a));
-			return false;
-		}
-
+	  //inform other player on current player's move.
 		n = write(waitingClient, &row, sizeof(row));
 		if (n == -1) {
 			cout << "Error writing row to socket" << endl;
@@ -177,8 +196,6 @@ bool Server::handleOneClient(int clientSocket, int waitingClient) {
 
 	return true;
 }
-
-
 
 bool Server::is_client_closed(int cs)
 {
@@ -203,23 +220,6 @@ bool Server::is_client_closed(int cs)
 	}
 	return false;
 }
-
-
-
-/*
- * string input method:
- *
- *		string massage = "Server: Waiting for another player to join...";
-		int n = write(clientSocket, massage.c_str(), strlen(massage.c_str())); // n needs to be checked
- *
- * in client mimush:
- * char message[80];
- *	int dummy = read(client.clientSocket, message, 80);
- *	cout << message<<endl;
- *
- *
- */
-
 
 void Server::stop() {
  close(serverSocket);
