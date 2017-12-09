@@ -13,8 +13,7 @@
 #include <string.h>
 #include <iostream>
 #include <stdio.h>
-
-#include <poll.h>          // For poll()
+#include <poll.h>
 
 using namespace std;
 #define MAX_CONNECTED_CLIENTS 2
@@ -186,19 +185,15 @@ bool Server::is_client_closed(int cs)
 	pfd.fd = cs;
 	pfd.events = POLLIN | POLLHUP | POLLRDNORM;
 	pfd.revents = 0;
-	while(pfd.revents == 0)
-	{
-		// call poll with a timeout of 100 ms
-		if(poll(&pfd, 1, 100) > 0)
-		{
-			// if result > 0, this means that there is either data available on the
-			// socket, or the socket has been closed
-			char buffer[32];
-			if(recv(cs, buffer, sizeof(buffer), MSG_PEEK | MSG_DONTWAIT) == 0)
-			{
-				// if recv returns zero, that means the connection has been closed:
-				return true;
-			}
+
+	// call poll with a timeout of 100 ms
+	if(poll(&pfd, 1, 100) > 0) {
+		// if result > 0, this means that there is either data available on the
+		// socket, or the socket has been closed
+		char buffer[32];
+		if(recv(cs, buffer, sizeof(buffer), MSG_PEEK | MSG_DONTWAIT) == 0) {
+			// if recv returns zero, that means the connection has been closed:
+			return true;
 		}
 	}
 	return false;
