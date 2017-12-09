@@ -22,12 +22,11 @@ int main() {
   }
   port_file >> port_num;
   port_file.close();
-	Server server(port_num);
-	try {
-	  server.start();
-	} catch (const char *msg) {
-		cout << "Cannot start server. Reason: " << msg << endl;
-		exit(-1);
-	}
-
+  Server server(port_num);
+  try {
+	server.start();
+  } catch (const char *msg) {
+	cout << "Cannot start server. Reason: " << msg << endl;
+	exit(-1);
+  }
 }

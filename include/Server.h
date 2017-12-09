@@ -22,6 +22,9 @@ public:
 	//CHANGE
 	bool handleOneClient(int clientSocket, int waitingClient);
 
+	bool is_client_closed(int cs);
+
+
 private:
 	int port;
 	int calc(int arg1, const char op, int arg2) const;

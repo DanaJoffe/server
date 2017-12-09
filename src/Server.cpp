@@ -13,6 +13,9 @@
 #include <string.h>
 #include <iostream>
 #include <stdio.h>
+
+#include <poll.h>          // For poll()
+
 using namespace std;
 #define MAX_CONNECTED_CLIENTS 2
 
@@ -41,7 +44,7 @@ void Server::start() {
 	struct sockaddr_in clientAddress;
 	socklen_t clientAddressLen;
 	while (true) {
-		cout << "Waiting for client connections..." << endl;
+		cout << "Waiting for clients connections..." << endl;
 		// Accept a new client connection
 		int clientSocket = accept(serverSocket, (struct sockaddr *)&clientAddress, &clientAddressLen);
 		cout << "Client connected" << endl;
@@ -49,7 +52,7 @@ void Server::start() {
 					throw "Error on accept";
 
 
-		cout << "Waiting for another player to join..."<<endl;
+		cout << "Waiting for one more client..."<<endl;
 		// client 2 connected
 		int clientSocket2 = accept(serverSocket, (struct sockaddr *)&clientAddress, &clientAddressLen);
 		cout << "Client connected" << endl;
@@ -144,6 +147,14 @@ bool Server::handleOneClient(int clientSocket, int waitingClient) {
 
 
 		//inform other player on current player's move.
+
+		if (is_client_closed(waitingClient)) {
+			cout << "Client disconnected" << endl;
+			int a = END;
+			n = write(clientSocket, &a, sizeof(a));
+			return false;
+		}
+
 		n = write(waitingClient, &row, sizeof(row));
 		if (n == -1) {
 			cout << "Error writing row to socket" << endl;
@@ -163,45 +174,36 @@ bool Server::handleOneClient(int clientSocket, int waitingClient) {
 		cout << "Finish game- closing clients' sockets" << endl;
 		return false;
 	}
+
 	return true;
 }
 
 
-//
-//bool Server::handleOneClient(int clientSocket) {
-//	int arg1, arg2;
-//	char op;
-//	// Read new exercise arguments
-//	int n = read(clientSocket, &arg1, sizeof(arg1));
-//	if (n == -1) {
-//		cout << "Error reading arg1" << endl;
-//		return false;
-//	}
-//	if (n == 0) {
-//		cout << "Client disconnected" << endl;
-//		return false;
-//	}
-//	n = read(clientSocket, &op, sizeof(op));
-//	if (n == -1) {
-//		cout << "Error reading operator" << endl;
-//		return false;
-//	}
-//	n = read(clientSocket, &arg2, sizeof(arg2));
-//	if (n == -1) {
-//		cout << "Error reading arg2" << endl;
-//		return false;
-//	}
-//	cout << "Got exercise: " << arg1 << op << arg2 <<endl;
-//	int result = calc(arg1, op, arg2);
-//	// Write the result back to the client
-//	cout << "send result to client" <<endl;
-//	n = write(clientSocket, &result, sizeof(result));
-//	if (n == -1) {
-//		cout << "Error writing to socket" << endl;
-//		return false;
-//	}
-//	return true;
-//}
+
+bool Server::is_client_closed(int cs)
+{
+	pollfd pfd;
+	pfd.fd = cs;
+	pfd.events = POLLIN | POLLHUP | POLLRDNORM;
+	pfd.revents = 0;
+	while(pfd.revents == 0)
+	{
+		// call poll with a timeout of 100 ms
+		if(poll(&pfd, 1, 100) > 0)
+		{
+			// if result > 0, this means that there is either data available on the
+			// socket, or the socket has been closed
+			char buffer[32];
+			if(recv(cs, buffer, sizeof(buffer), MSG_PEEK | MSG_DONTWAIT) == 0)
+			{
+				// if recv returns zero, that means the connection has been closed:
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 
 
 /*
