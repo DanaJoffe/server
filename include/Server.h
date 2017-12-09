@@ -54,9 +54,11 @@ public:
 	 */
 	bool is_client_closed(int cs);
 
+
 private:
 	int port;
-  int serverSocket;
+	int serverSocket;
+
 
 };
 

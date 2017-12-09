@@ -16,6 +16,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+
 using namespace std;
 #define MAX_CONNECTED_CLIENTS 10
 
@@ -145,7 +146,7 @@ bool Server::handleOneClient(int clientSocket, int waitingClient) {
     }
 	}
 
-//  inform client if other client disconnected
+  //inform client if other client disconnected
   if (is_client_closed(waitingClient)) {
     cout << "Client disconnected" << endl;
     int a = END;
