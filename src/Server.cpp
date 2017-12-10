@@ -108,7 +108,7 @@ bool Server::handleOneClient(int clientSocket, int waitingClient) {
 	char sep;
 	int n;
 
-	// Read status arguments
+	// Read status argument
 	n = read(clientSocket, &status, sizeof(status));
 	if (n == -1) {
 		cout << "Error reading status" << endl;
@@ -117,6 +117,7 @@ bool Server::handleOneClient(int clientSocket, int waitingClient) {
 		cout << "Client disconnected" << endl;
 		return false;
 	}
+
 	//get player's move if status is has move
 	if (status == HAS_MOVE) {
     // Read player's move arguments
@@ -146,11 +147,9 @@ bool Server::handleOneClient(int clientSocket, int waitingClient) {
     }
 	}
 
-  //inform client if other client disconnected
+  //return false if other client disconnected
   if (is_client_closed(waitingClient)) {
     cout << "Client disconnected" << endl;
-    int a = END;
-    n = write(clientSocket, &a, sizeof(a));
     return false;
   }
 
@@ -166,11 +165,9 @@ bool Server::handleOneClient(int clientSocket, int waitingClient) {
 
 	} else if (status == HAS_MOVE) {
 
-	  //inform client if other client disconnected
+	  //return false if other client disconnected
 		if (is_client_closed(waitingClient)) {
 			cout << "Client disconnected" << endl;
-			int a = END;
-			n = write(clientSocket, &a, sizeof(a));
 			return false;
 		}
 

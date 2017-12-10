@@ -1,8 +1,8 @@
 /*
  * socket.h
  *
- *  Created on: Dec 3, 2017
- *      Author: chaviva
+ * Author1: name & ID: Dana Joffe 312129240
+ * Author2: name & ID: Chaviva Moshavi 322082892
  */
 
 #ifndef SOCKET_H_
