@@ -58,8 +58,6 @@ public:
 private:
 	int port;
 	int serverSocket;
-
-
 };
 
 #endif /* SERVER_H_ */
