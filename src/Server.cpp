@@ -119,38 +119,36 @@ bool Server::handleOneClient(int clientSocket, int waitingClient) {
 	}
 	//get player's move if status is has move
 	if (status == HAS_MOVE) {
-    // Read player's move arguments
-    n = read(clientSocket, &row, sizeof(row));
-    if (n == -1) {
-      cout << "Error reading row" << endl;
-      return false;
-    } else if (n == 0) {
-      cout << "Client disconnected" << endl;
-      return false;
-    }
-    n = read(clientSocket, &sep, sizeof(sep));
-    if (n == -1) {
-      cout << "Error reading separator" << endl;
-      return false;
-    } else  if (n == 0) {
-      cout << "Client disconnected" << endl;
-      return false;
-    }
-    n = read(clientSocket, &col, sizeof(col));
-    if (n == -1) {
-      cout << "Error reading col" << endl;
-      return false;
-    } else  if (n == 0) {
-      cout << "Client disconnected" << endl;
-      return false;
-    }
+      // Read player's move arguments
+      n = read(clientSocket, &row, sizeof(row));
+      if (n == -1) {
+        cout << "Error reading row" << endl;
+        return false;
+      } else if (n == 0) {
+        cout << "Client disconnected" << endl;
+        return false;
+      }
+      n = read(clientSocket, &sep, sizeof(sep));
+      if (n == -1) {
+        cout << "Error reading separator" << endl;
+        return false;
+      } else  if (n == 0) {
+        cout << "Client disconnected" << endl;
+        return false;
+      }
+      n = read(clientSocket, &col, sizeof(col));
+      if (n == -1) {
+        cout << "Error reading col" << endl;
+        return false;
+      } else if (n == 0) {
+        cout << "Client disconnected" << endl;
+        return false;
+      }
 	}
 
   //inform client if other client disconnected
   if (is_client_closed(waitingClient)) {
     cout << "Client disconnected" << endl;
-    int a = END;
-    n = write(clientSocket, &a, sizeof(a));
     return false;
   }
 
@@ -169,8 +167,6 @@ bool Server::handleOneClient(int clientSocket, int waitingClient) {
 	  //inform client if other client disconnected
 		if (is_client_closed(waitingClient)) {
 			cout << "Client disconnected" << endl;
-			int a = END;
-			n = write(clientSocket, &a, sizeof(a));
 			return false;
 		}
 
