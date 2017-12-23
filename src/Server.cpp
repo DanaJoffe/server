@@ -5,19 +5,8 @@
  * Author2: name & ID: Chaviva Moshavi 322082892
  */
 
-#include <string.h>
-#include <iostream>
-#include <stdio.h>
-
-
-#include <netinet/in.h>
-#include <poll.h>
 #include "Server.h"
-#include <sys/socket.h>
-#include <unistd.h>
 
-
-using namespace std;
 #define MAX_CONNECTED_CLIENTS 10
 
 
@@ -102,91 +91,113 @@ void Server::handleTwoClients(int clientSocket1, int clientSocket2) {
 	}
 }
 
+string readStringFromSocket(int length, int socket) {
+	string str;
+	int r;
+	char letter;
+	while (length >0) {
+		r = read(socket, &letter, sizeof(letter));
+		if (r == -1) {
+			cout << "readStringFromSocket: Error reading message" << endl;
+			return NULL;
+		}
+		str.append(1,letter);
+		length -= 1;
+	}
+	return str;
+}
+
+Status PlayDecoder(string message, int* row, int* col) {
+	string buf; // Have a buffer string
+	stringstream msg(message); // Insert the string into a stream
+	vector<string> tokens; // Create vector to hold our words
+
+	while (msg >> buf)
+		   tokens.push_back(buf);
+
+	int num1 = atoi(tokens[1].c_str());
+	int num2 = atoi(tokens[2].c_str());
+
+	if(num1 == -1 && num2 == -1) {
+		return NO_MOVES;
+	} else if(num1 == -2 && num2 == -2) {
+		return END;
+	} else {
+		*row = num1;
+		*col = num2;
+		return HAS_MOVE;
+	}
+}
+
 bool Server::handleOneClient(int clientSocket, int waitingClient) {
-	int status;
-	int row, col;
-	char sep;
+//	int status;
+	int row, col, size;
+//	char sep;
 	int n;
 
-	// Read status argument
-	n = read(clientSocket, &status, sizeof(status));
+//	// Read status argument
+//	n = read(clientSocket, &status, sizeof(status));
+//	if (n == -1) {
+//		cout << "Error reading status" << endl;
+//		return false;
+//	} else if (n == 0) {
+//		cout << "Client disconnected" << endl;
+//		return false;
+//	}
+
+
+	// Read length
+	n = read(clientSocket, &size, sizeof(size));
 	if (n == -1) {
-		cout << "Error reading status" << endl;
+		cout << "Error reading size" << endl;
 		return false;
-	} else if (n == 0) {
+	}
+	if (n == 0) {
 		cout << "Client disconnected" << endl;
 		return false;
 	}
 
-	//get player's move if status is has move
-	if (status == HAS_MOVE) {
-      // Read player's move arguments
-      n = read(clientSocket, &row, sizeof(row));
-      if (n == -1) {
-        cout << "Error reading row" << endl;
-        return false;
-      } else if (n == 0) {
-        cout << "Client disconnected" << endl;
-        return false;
-      }
-      n = read(clientSocket, &sep, sizeof(sep));
-      if (n == -1) {
-        cout << "Error reading separator" << endl;
-        return false;
-      } else  if (n == 0) {
-        cout << "Client disconnected" << endl;
-        return false;
-      }
-      n = read(clientSocket, &col, sizeof(col));
-      if (n == -1) {
-        cout << "Error reading col" << endl;
-        return false;
-      } else if (n == 0) {
-        cout << "Client disconnected" << endl;
-        return false;
-      }
+	// Read message
+	string move = readStringFromSocket(size, clientSocket);
+//	if (move == NULL) {
+//		return false;
+//	}
+
+	// Decipher status
+	Status status = PlayDecoder(move, &row, &col);
+
+	//return false if other client disconnected
+	if (is_client_closed(waitingClient)) {
+		cout << "Client disconnected" << endl;
+	    return false;
 	}
 
-  //return false if other client disconnected
-  if (is_client_closed(waitingClient)) {
-    cout << "Client disconnected" << endl;
-    return false;
-  }
-
-	//inform other player on current player's status.
-	n = write(waitingClient, &status, sizeof(status));
+	// writing message size
+	n = write(waitingClient, &size, sizeof(size));
 	if (n == -1) {
-		cout << "Error writing status to socket" << endl;
+		cout << "Error writing size to socket" << endl;
 		return false;
 	}
 
+	//return false if other client disconnected
+	if (is_client_closed(waitingClient)) {
+	    cout << "Client disconnected" << endl;
+	    return false;
+	}
+
+	//writing message
+	n = write(waitingClient, move.c_str(), strlen(move.c_str()));
+	if (n == -1) {
+		cout << "Error writing move to socket" << endl;
+		return false;
+	}
+
+
 	if (status == NO_MOVES) {
+		cout << "Player has no moves" << endl;
 		return true; //current player is still in the game.
-
 	} else if (status == HAS_MOVE) {
-
-	  //return false if other client disconnected
-		if (is_client_closed(waitingClient)) {
-			cout << "Client disconnected" << endl;
-			return false;
-		}
-
-	  //inform other player on current player's move.
-		n = write(waitingClient, &row, sizeof(row));
-		if (n == -1) {
-			cout << "Error writing row to socket" << endl;
-			return false;
-		}
-		n = write(waitingClient, &sep, sizeof(sep));
-		if (n == -1) {
-			cout << "Error writing separator to socket" << endl;
-			return false;
-		}
-		n = write(waitingClient, &col, sizeof(col));
-		if (n == -1) {
-			cout << "Error writing col to socket" << endl;
-			return false;
-		}
+		cout << "Player's move is: " << row << ", " << col<< endl;
 	} else if (status == END) {
 		cout << "Finish game- closing clients' sockets" << endl;
 		return false;
@@ -194,6 +205,89 @@ bool Server::handleOneClient(int clientSocket, int waitingClient) {
 
 	return true;
 }
+
+
+
+
+
+//
+//
+//	//get player's move if status is has move
+//	if (status == HAS_MOVE) {
+////      // Read player's move arguments
+////      n = read(clientSocket, &row, sizeof(row));
+////      if (n == -1) {
+////        cout << "Error reading row" << endl;
+////        return false;
+////      } else if (n == 0) {
+////        cout << "Client disconnected" << endl;
+////        return false;
+////      }
+////      n = read(clientSocket, &sep, sizeof(sep));
+////      if (n == -1) {
+////        cout << "Error reading separator" << endl;
+////        return false;
+////      } else  if (n == 0) {
+////        cout << "Client disconnected" << endl;
+////        return false;
+////      }
+////      n = read(clientSocket, &col, sizeof(col));
+////      if (n == -1) {
+////        cout << "Error reading col" << endl;
+////        return false;
+////      } else if (n == 0) {
+////        cout << "Client disconnected" << endl;
+////        return false;
+////      }
+//	}
+//
+//  //return false if other client disconnected
+//  if (is_client_closed(waitingClient)) {
+//    cout << "Client disconnected" << endl;
+//    return false;
+//  }
+//
+//	//inform other player on current player's status.
+////	n = write(waitingClient, &status, sizeof(status));
+////	if (n == -1) {
+////		cout << "Error writing status to socket" << endl;
+////		return false;
+////	}
+//
+//	if (status == NO_MOVES) {
+//		return true; //current player is still in the game.
+//
+//	} else if (status == HAS_MOVE) {
+//
+//	  //return false if other client disconnected
+//		if (is_client_closed(waitingClient)) {
+//			cout << "Client disconnected" << endl;
+//			return false;
+//		}
+//
+//	  //inform other player on current player's move.
+////		n = write(waitingClient, &row, sizeof(row));
+////		if (n == -1) {
+////			cout << "Error writing row to socket" << endl;
+////			return false;
+////		}
+////		n = write(waitingClient, &sep, sizeof(sep));
+////		if (n == -1) {
+////			cout << "Error writing separator to socket" << endl;
+////			return false;
+////		}
+////		n = write(waitingClient, &col, sizeof(col));
+////		if (n == -1) {
+////			cout << "Error writing col to socket" << endl;
+////			return false;
+////		}
+//	} else if (status == END) {
+//		cout << "Finish game- closing clients' sockets" << endl;
+//		return false;
+//	}
+//
+//	return true;
+//}
 
 bool Server::is_client_closed(int cs)
 {

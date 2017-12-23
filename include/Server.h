@@ -8,6 +8,23 @@
 #ifndef SERVER_H_
 #define SERVER_H_
 
+
+#include <string.h>
+#include <iostream>
+#include <stdio.h>
+
+#include <netinet/in.h>
+#include <poll.h>
+#include <sys/socket.h>
+#include <unistd.h>
+
+#include <sstream>
+#include <vector>
+#include <stdlib.h>
+
+using namespace std;
+
+
 //input message status
 enum Status {NO_MOVES, HAS_MOVE, END};
 
