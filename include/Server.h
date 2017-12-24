@@ -9,24 +9,14 @@
 #define SERVER_H_
 
 
-#include <string.h>
-#include <iostream>
-#include <stdio.h>
 
-#include <netinet/in.h>
-#include <poll.h>
-#include <sys/socket.h>
-#include <unistd.h>
-
-#include <sstream>
-#include <vector>
-#include <stdlib.h>
+#include <threads.h>
 
 using namespace std;
 
 
 //input message status
-enum Status {NO_MOVES, HAS_MOVE, END};
+
 
 /*
  * Communication Protocol description:
@@ -58,23 +48,30 @@ public:
 	 * stops server.
 	 */
 	void stop();
+
+
 	/*
 	 * sends and receives messages to 2 clients.
 	 */
-	void handleTwoClients(int clientSocket1, int clientSocket2);
+//	void handleTwoClients(int clientSocket1, int clientSocket2);
+
+
+
 	/*
 	 * receives messages from one client and sends them to the waiting client
 	 */
-	bool handleOneClient(int clientSocket, int waitingClient);
+//	bool handleOneClient(int clientSocket, int waitingClient);
+
+
 	/*
 	 *checks if client disconnected
 	 */
-	bool is_client_closed(int cs);
+//	bool is_client_closed(int cs);
 
 
 private:
-	int port;
-	int serverSocket;
+	int port_;
+	int serverSocket_;
 };
 
 #endif /* SERVER_H_ */

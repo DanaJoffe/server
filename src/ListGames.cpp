@@ -14,7 +14,7 @@ void ListGames::execute(vector<string>& args, map<string, vector<int> >& games,
   map<string, vector<int> >::iterator it;
   for (it = games.begin(); it != games.end(); it++) {
     if (it->second.size() == 1) {
-      available_games << it->first << endl;
+      available_games << it->first << " "<< endl;
     }
   }
   //send size of string
@@ -27,7 +27,7 @@ void ListGames::execute(vector<string>& args, map<string, vector<int> >& games,
   }
   //send string of available games
   string msg = available_games.str();
-  n = write(client_socket, &msg, size);
+  n = write(client_socket, msg.c_str(), size);
   if (n == -1) {
     cout << "Error writing available games to socket" << endl;
   }

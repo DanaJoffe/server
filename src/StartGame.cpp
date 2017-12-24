@@ -14,7 +14,6 @@ void StartGame::execute(vector<string>& args, map<string, vector<int> >& games,
   players_sockets.push_back(client_socket);
   pair<map<string, vector<int> >::iterator,bool> result;
   result = games.insert(make_pair(args[0], players_sockets));
-  int n;
   int ret;
   if (result.second == false) {
     ret = -1;
@@ -22,7 +21,7 @@ void StartGame::execute(vector<string>& args, map<string, vector<int> >& games,
     ret = 1;
   }
   //write to client if succeeded to start the game
-  n = write(client_socket, &ret, sizeof(ret));
+  int n = write(client_socket, &ret, sizeof(ret));
   if (n == -1) {
     cout << "Error writing return value to socket" << endl;
   }
