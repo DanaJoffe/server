@@ -9,6 +9,10 @@
 
 void JoinGame::execute(vector<string>& args, map<string, vector<int> >& games,
     int client_socket) {
+
+  //lock min code
+  //use copy of sockets for the rest
+
   //find game
   map<string, vector<int> >::iterator it;
   it = games.find(args[0]);
@@ -39,4 +43,6 @@ void JoinGame::execute(vector<string>& args, map<string, vector<int> >& games,
       cout << "Error writing color to socket" << endl;
     }
   }
+
+  //create thread and call run game, pass map as parameter
 }

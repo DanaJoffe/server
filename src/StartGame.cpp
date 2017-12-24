@@ -13,7 +13,13 @@ void StartGame::execute(vector<string>& args, map<string, vector<int> >& games,
   vector<int> players_sockets;
   players_sockets.push_back(client_socket);
   pair<map<string, vector<int> >::iterator,bool> result;
+
+  //lock code
   result = games.insert(make_pair(args[0], players_sockets));
+
+  //unlock code
+
+  int n;
   int ret;
   if (result.second == false) {
     ret = -1;
