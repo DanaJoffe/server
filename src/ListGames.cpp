@@ -9,6 +9,10 @@
 
 void ListGames::execute(vector<string>& args, map<string, vector<int> >& games,
     int client_socket) {
+  //lock
+  //copy map
+  //unlock
+
   //write string of available games to send to client
   stringstream available_games;
   map<string, vector<int> >::iterator it;

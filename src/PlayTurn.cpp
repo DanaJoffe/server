@@ -9,6 +9,11 @@
 
 void PlayTurn::execute(vector<string>& args, map<string, vector<int> >& games,
     int client_socket) {
+
+  //lock
+  //copy map
+  //unlock
+
   int other_player;
   //find other player in client's game
   map<string, vector<int> >::iterator it;
@@ -24,7 +29,7 @@ void PlayTurn::execute(vector<string>& args, map<string, vector<int> >& games,
     }
   }
   //send play coordinates to other player
-  for (int i = 0; i < args.size(); i++) {
+  for (unsigned i = 0; i < args.size(); i++) {
     int c;
     stringstream coordinate(args[i]);
     coordinate >> c;
