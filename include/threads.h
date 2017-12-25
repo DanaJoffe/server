@@ -31,13 +31,16 @@
 #include <poll.h>
 //#include <map>
 
+//#include <thread>
+//#include <mutex>
+
 using namespace std;
 
 
 enum Status {NO_MOVES, HAS_MOVE, END};
 
-
-extern pthread_mutex_t map_mutex;
+//extern
+static pthread_mutex_t map_mutex;
 
 struct ThreadClientArgs {
   int clientSocketFirst;

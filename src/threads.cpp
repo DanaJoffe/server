@@ -7,6 +7,8 @@
 
 #include "threads.h"
 
+
+
 bool readCommand(int socket, string* comName, vector<string>* args) {
 	int length;
 	// Read length

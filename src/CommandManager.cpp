@@ -11,8 +11,8 @@ CommandManager::CommandManager() {
   commands_["start"] = new StartGame();
   commands_["list_games"] = new ListGames();
   commands_["join"] = new JoinGame();
-  commands_["play"] = new PlayTurn();
-  commands_["close"] = new CloseGame();
+//  commands_["play"] = new PlayTurn();
+//  commands_["close"] = new CloseGame();
 }
 
 void CommandManager::executeCommand(string command, vector<string>& args,

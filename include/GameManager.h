@@ -19,9 +19,10 @@ public:
 	bool is_client_closed(int cs);
 
 	Status PlayDecoder(string message, int* row, int* col);
-	int findOtherPlayer(map<string, vector<int> >& games,string& gameName, int clientSocket);
 	bool isGameOnList(string& comgameName);
 
+	void closeGame(string& gameName, map<string, vector<int> >& games,  int waitingClient);
+	bool playTurn(vector<string>& args, int waitingClient);
 	void RunGame(int clientSocket1 , int clientSocket2, string& gameName, map<string, vector<int> >& games);
 	bool handleOneClient(int clientSocket, int waitingclient, string& gameName, map<string, vector<int> >& games);
 

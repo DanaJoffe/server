@@ -6,7 +6,6 @@
  */
 
 #include "ListGames.h"
-#include "thread.h"
 
 void ListGames::execute(vector<string>& args, map<string, vector<int> >& games,
     int client_socket) {

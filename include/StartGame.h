@@ -9,6 +9,7 @@
 #define STARTGAME_H_
 
 #include "Command.h"
+#include "threads.h"
 
 #include <unistd.h>
 

@@ -6,7 +6,6 @@
  */
 
 #include "JoinGame.h"
-#include "thread.h"
 
 void JoinGame::execute(vector<string>& args, map<string, vector<int> >& games,
     int client_socket) {

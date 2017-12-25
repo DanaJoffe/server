@@ -9,13 +9,6 @@
 
 
 void GameManager::RunGame(int clientSocket1 , int clientSocket2, string& gameName, map<string, vector<int> >& games) {
-//	struct ThreadClientArgs *args = (struct ThreadClientArgs *)clientArgs;
-//	int clientSocket1 = args->clientSocketFirst;
-//	int clientSocket2 = args->clientSocketSecond;
-//	map<string, vector<int> > games = *(args->games);
-//	string gameName = args->gameName;
-
-
 //	while (isGameOnList(gameName)) {
 	while (true) {
 		//handle first client
@@ -32,47 +25,23 @@ void GameManager::RunGame(int clientSocket1 , int clientSocket2, string& gameNam
 	return;
 }
 
-bool GameManager::handleOneClient(int clientSocket, int waitingclient, string& gameName, map<string, vector<int> >& games) {
+bool GameManager::handleOneClient(int clientSocket, int waitingClient, string& gameName, map<string, vector<int> >& games) {
 	int size, n;
-
-	// Read length
-	n = read(clientSocket, &size, sizeof(size));
-	if (n == -1) {
-		cout << "Error reading size" << endl;
-		return false;
-	}
-	if (n == 0) {
-		cout << "Client disconnected" << endl;
-		return false;
-	}
-
-	// Read message
-	string move = readStringFromSocket(size, clientSocket);
-
-	//return false if other client disconnected
-//	if (is_client_closed(findOtherPlayer(games,gameName, clientSocket))) {
-	if (is_client_closed(waitingclient)) {
-		cout << "Client disconnected" << endl;
-	    return false;
-	}
-
-	// Interpret
-	string buf; // Have a buffer string
-	stringstream msg(move); // Insert the string into a stream
-	msg >> buf;
-	string comName = buf;
+	// recieve command and arguments
+	string commandName;
 	vector<string> args;
+	bool b = readCommand(clientSocket, &commandName, &args);
+	if (b == false)
+		throw "Error reading from socket";
 
-	//add game's name to args
-//	args.push_back(gameName);
-
-	//add all arguments
-	while (msg >> buf)
-		args.push_back(buf);
-
-//	CommandManager comManager;
-//	comManager.executeCommand(comName, args, games, clientSocket);
-
+	if (strcmp(commandName.c_str(), "close") == 0) {
+		closeGame(gameName, games, waitingClient);
+		return false;
+	} else if (strcmp(commandName.c_str(), "play") == 0) {
+		bool b = playTurn(args, waitingClient);
+		if (b == false)
+			return false;
+	}
 	return true;
 }
 
@@ -97,11 +66,71 @@ bool GameManager::handleOneClient(int clientSocket, int waitingclient, string& g
 	}
  */
 
+void GameManager::closeGame(string& gameName, map<string, vector<int> >& games,  int waitingClient) {
+	int row,col;
+	row = col = -2;
+	if (is_client_closed(waitingClient)) {
+		cout << "Client disconnected" << endl;
+		return;
+	}
+	// writing row to waitingClient socket
+	int n = write(waitingClient, &row, sizeof(row));
+	if (n == -1) {
+		cout << "Error writing size to socket" << endl;
+		return;
+	}
+	if (is_client_closed(waitingClient)) {
+		cout << "Client disconnected" << endl;
+		return;
+	}
+	// writing col to waitingClient socket
+	int n = write(waitingClient, &col, sizeof(col));
+	if (n == -1) {
+		cout << "Error writing size to socket" << endl;
+		return;
+	}
 
-//NEED TO WRITE!!!
-int GameManager::findOtherPlayer(map<string, vector<int> >& games, string& gameName, int clientSocket) {
-	return 0;
+	 map<string, vector<int> >::iterator iter;
+	 iter = games.find(gameName);
+	 vector<int> clients = iter->second;
+	 int firstClient = clients[0];
+	 int secondClient = clients[1];
+
+	 // Close communication with the client
+	 close(firstClient);
+	 close(secondClient);
+
+	 //delete gameName from games
+	 games.erase (gameName);
 }
+
+bool GameManager::playTurn(vector<string>& args, int waitingClient) {
+	int row = atoi(args[0].c_str());
+	int col = atoi(args[1].c_str());
+
+	if (is_client_closed(waitingClient)) {
+		cout << "Client disconnected" << endl;
+		return false;
+	}
+	// writing row to waitingClient socket
+	int n = write(waitingClient, &row, sizeof(row));
+	if (n == -1) {
+		cout << "Error writing size to socket" << endl;
+		return false;
+	}
+	if (is_client_closed(waitingClient)) {
+		cout << "Client disconnected" << endl;
+		return false;
+	}
+	// writing col to waitingClient socket
+	int n = write(waitingClient, &col, sizeof(col));
+	if (n == -1) {
+		cout << "Error writing size to socket" << endl;
+		return false;
+	}
+	return true;
+}
+
 
 bool GameManager::is_client_closed(int cs) {
 	pollfd pfd;
