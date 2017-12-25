@@ -36,6 +36,9 @@ bool readCommand(int socket, string* comName, vector<string>* args) {
 }
 
 void* tTreatClient(void *clientMapArgs) {
+
+	cout << "tTreatClient" <<endl;
+
 	struct ClientMapArgs *arguments = (struct ClientMapArgs  *)clientMapArgs;
 	int clientSocket = arguments->clientSocket;
 
@@ -77,6 +80,8 @@ string readStringFromSocket(int length, int socket) {
 	return str;
 }
 void* tRecievePlayers(void *serverArgs) {
+	cout << "tRecievePlayers" <<endl;
+
 	struct ThreadServerArgs *arguments = (struct ThreadServerArgs *)serverArgs;
 	int serverSocket = arguments->serverSocket;
 	ClientHandler* handler = arguments->handler;
@@ -91,9 +96,13 @@ void* tRecievePlayers(void *serverArgs) {
 		// Accept a new client connection
 		int clientSocket = accept(serverSocket, (struct sockaddr *)&clientAddress, &clientAddressLen);
 		cout << "Client connected" << endl;
-		if (clientSocket == -1)
+		if (clientSocket == -1){
+			cout << "Error on accept" <<endl;
 			throw "Error on accept";
+		}
 
+
+		cout << "tRecievePlayers: handler->handle" <<endl;
 		handler->handle(clientSocket);
 	}
 }

@@ -35,6 +35,10 @@ void Server::start() {
 
 	ClientHandler handler = ClientHandler();
 
+
+	cout << " Server::start()" <<endl;
+
+
 	struct ThreadServerArgs args;
 	args.serverSocket = serverSocket_;
 	args.handler = &handler;

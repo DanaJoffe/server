@@ -54,7 +54,7 @@ void JoinGame::execute(vector<string>& args, map<string, vector<int> >& games,
       cout << "Error writing color to socket" << endl;
     }
     //run game
-     GameManager game_manager = GameManager();
+     GameManager game_manager;
      game_manager.RunGame(game_clients[0], game_clients[1], game_name, games);
   }
 }

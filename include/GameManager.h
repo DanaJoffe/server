@@ -15,10 +15,9 @@ public:
   /*
    * constructs.
    */
-	GameManager();
+	GameManager(){};
 	bool is_client_closed(int cs);
 
-	Status PlayDecoder(string message, int* row, int* col);
 	bool isGameOnList(string& comgameName);
 
 	void closeGame(string& gameName, map<string, vector<int> >& games,  int waitingClient);

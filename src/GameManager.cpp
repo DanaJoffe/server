@@ -153,28 +153,6 @@ bool GameManager::is_client_closed(int cs) {
 
 
 
-Status GameManager::PlayDecoder(string message, int* row, int* col) {
-	string buf; // Have a buffer string
-	stringstream msg(message); // Insert the string into a stream
-	vector<string> tokens; // Create vector to hold our words
-
-	while (msg >> buf)
-		   tokens.push_back(buf);
-
-	int num1 = atoi(tokens[1].c_str());
-	int num2 = atoi(tokens[2].c_str());
-	*row = num1;
-	*col = num2;
-
-	if(num1 == -1 && num2 == -1) {
-		return NO_MOVES;
-	} else if(num1 == -2 && num2 == -2) {
-		return END;
-	} else {
-		return HAS_MOVE;
-	}
-}
-
 //NEED TO WRITE
 bool GameManager::isGameOnList(string& comgameName) {
 	return true;

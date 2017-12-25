@@ -16,6 +16,8 @@ ClientHandler::ClientHandler() {
 }
 
 void ClientHandler::handle(int clientSocket) {
+	cout << "ClientHandler::handle" <<endl;
+
 	struct ClientMapArgs clientMapArgs;
 	clientMapArgs.clientSocket = clientSocket;
 	clientMapArgs.games = this->getGames();

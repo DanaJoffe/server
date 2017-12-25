@@ -13,6 +13,8 @@ using namespace std;
 
 //run server
 int main() {
+try {
+
   //get server port number from file
   int port_num;
   ifstream port_file;
@@ -33,5 +35,9 @@ int main() {
   }
   //stop server
   server.stop();
+
+}catch (const char* msg) {
+	cout << msg << endl;
+	}
   return 0;
 }

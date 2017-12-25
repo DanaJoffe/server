@@ -9,6 +9,9 @@
 
 void StartGame::execute(vector<string>& args, map<string, vector<int> >& games,
     int client_socket) {
+	cout << "StartGame::execute" <<endl;
+
+
   //add game name to map with client_socket as player 1
   vector<int> players_sockets;
   players_sockets.push_back(client_socket);
