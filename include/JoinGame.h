@@ -10,6 +10,8 @@
 
 #include "Command.h"
 #include "threads.h"
+#include "GameManager.h"
+
 
 #include <unistd.h>
 
