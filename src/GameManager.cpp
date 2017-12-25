@@ -84,7 +84,7 @@ void GameManager::closeGame(string& gameName, map<string, vector<int> >& games, 
 		return;
 	}
 	// writing col to waitingClient socket
-	int n = write(waitingClient, &col, sizeof(col));
+	n = write(waitingClient, &col, sizeof(col));
 	if (n == -1) {
 		cout << "Error writing size to socket" << endl;
 		return;
@@ -123,7 +123,7 @@ bool GameManager::playTurn(vector<string>& args, int waitingClient) {
 		return false;
 	}
 	// writing col to waitingClient socket
-	int n = write(waitingClient, &col, sizeof(col));
+	n = write(waitingClient, &col, sizeof(col));
 	if (n == -1) {
 		cout << "Error writing size to socket" << endl;
 		return false;
