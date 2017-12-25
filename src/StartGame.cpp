@@ -5,7 +5,8 @@
  *      Author: chaviva
  */
 
-#include <StartGame.h>
+#include "StartGame.h"
+#include "thread.h"
 
 void StartGame::execute(vector<string>& args, map<string, vector<int> >& games,
     int client_socket) {
@@ -13,11 +14,9 @@ void StartGame::execute(vector<string>& args, map<string, vector<int> >& games,
   vector<int> players_sockets;
   players_sockets.push_back(client_socket);
   pair<map<string, vector<int> >::iterator,bool> result;
-
-  //lock code
+  pthread_mutex_lock(&map_mutex);
   result = games.insert(make_pair(args[0], players_sockets));
-
-  //unlock code
+  pthread_mutex_unlock(&map_mutex);
 
   int ret;
   if (result.second == false) {
@@ -29,5 +28,9 @@ void StartGame::execute(vector<string>& args, map<string, vector<int> >& games,
   int n = write(client_socket, &ret, sizeof(ret));
   if (n == -1) {
     cout << "Error writing return value to socket" << endl;
+  }
+  //if starting game didn't succeed, close client socket
+  if (ret == -1) {
+    close(client_socket);
   }
 }
