@@ -9,6 +9,8 @@
 #define JOINGAME_H_
 
 #include "Command.h"
+#include "threads.h"
+#include "GameManager.h"
 
 #include <unistd.h>
 

@@ -9,6 +9,7 @@
 #define LISTGAMES_H_
 
 #include "Command.h"
+#include "threads.h"
 
 #include <sstream>
 #include <string>

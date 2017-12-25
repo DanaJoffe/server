@@ -6,7 +6,6 @@
  */
 
 #include "JoinGame.h"
-#include "thread.h"
 
 void JoinGame::execute(vector<string>& args, map<string, vector<int> >& games,
     int client_socket) {
@@ -55,8 +54,8 @@ void JoinGame::execute(vector<string>& args, map<string, vector<int> >& games,
       cout << "Error writing color to socket" << endl;
     }
     //run game
-      //create gameManager
-      //call run game, pass map, game_name, clients as parameter
+     GameManager game_manager = GameManager();
+     game_manager.RunGame(game_clients[0], game_clients[1], game_name, games);
   }
 }
 
