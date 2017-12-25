@@ -13,13 +13,13 @@ void JoinGame::execute(vector<string>& args, map<string, vector<int> >& games,
 
   vector<int> game_clients;
   string game_name;
+  map<string, vector<int> >::iterator it;
+  int result;
 
   //find game
   pthread_mutex_lock(&map_mutex);
-  map<string, vector<int> >::iterator it;
   it = games.find(args[0]);
-  int result;
-  if (!(it == games.end()) && it->second.size() == 1) {
+  if (it != games.end() && it->second.size() == 1) {
     game_name = it->first;
     //add player to game
     it->second.push_back(client_socket);
