@@ -7,36 +7,34 @@
 
 #include <threads.h>
 
-//handleTwoClients
 void* threadRunGame(void *clientArgs) { //void* client_socket1, void* client_socket2) {
 
 	struct ThreadClientArgs *args = (struct ThreadClientArgs *)clientArgs;
 
-	int clientSocket1 = args->clientSocket1;
-	int clientSocket2 = args->clientSocket2;
+	int clientSocket1 = args->clientSocketFirst;
+	int clientSocket2 = args->clientSocketSecond;
+	map<string, vector<int> > games = *(args->games);
+	string gameName = args->gameName;
 
-
-	map<string, vector<int> > games;
-
-	while (true) {
+	while (isGameOnList(gameName)) {
 		//handle first client
-		bool isClient1Connected = handleOneClient(clientSocket1, games); //return msg
+		bool isClient1Connected = handleOneClient(clientSocket1, gameName, games); //return msg
 		if (!isClient1Connected) {
 			return NULL;
 		}
 		//handle second client
-		bool isClient2Connected = handleOneClient(clientSocket2, games);
+		bool isClient2Connected = handleOneClient(clientSocket2,gameName, games);
 		if (!isClient2Connected) {
 			return NULL;
 		}
 	}
-	// Close communication with the client
-	close(clientSocket1);
-	close(clientSocket2);
 	return NULL;
 }
 
-
+//NEED TO WRITE
+bool isGameOnList(string& comgameName) {
+	return true;
+}
 
 void* threadRecievePlayers(void *serverArgs) {
 	struct ThreadServerArgs *arguments = (struct ThreadServerArgs *)serverArgs;
@@ -57,11 +55,10 @@ void* threadRecievePlayers(void *serverArgs) {
 
 		// recieve command and arguments
 		string commandName;
-		vector<string> argss;
-		bool b = readCommand(clientSocket, &commandName, &argss);
+		vector<string> args;
+		bool b = readCommand(clientSocket, &commandName, &args);
 		if (b == false)
 			throw "Error reading from socket";
-
 
 		/*// CHECK::
 		cout << "commandName: " <<commandName<<endl;
@@ -73,7 +70,7 @@ void* threadRecievePlayers(void *serverArgs) {
 		*/
 
 		CommandManager comManager;
-		comManager.executeCommand(commandName, argss, *arguments->games, clientSocket);
+		comManager.executeCommand(commandName, args, *arguments->games, clientSocket);
 
 		/* didn't do:
 		 *
@@ -85,7 +82,7 @@ void* threadRecievePlayers(void *serverArgs) {
 	}
 }
 
-bool handleOneClient(int clientSocket, map<string, vector<int> >& games) {
+bool handleOneClient(int clientSocket, string& gameName, map<string, vector<int> >& games) {
 	int size, n;
 
 	// Read length
@@ -103,7 +100,7 @@ bool handleOneClient(int clientSocket, map<string, vector<int> >& games) {
 	string move = readStringFromSocket(size, clientSocket);
 
 	//return false if other client disconnected
-	if (is_client_closed(findOtherPlayer(games, clientSocket))) {
+	if (is_client_closed(findOtherPlayer(games,gameName, clientSocket))) {
 		cout << "Client disconnected" << endl;
 	    return false;
 	}
@@ -114,6 +111,10 @@ bool handleOneClient(int clientSocket, map<string, vector<int> >& games) {
 	msg >> buf;
 	string comName = buf;
 	vector<string> args;
+
+	//add game's name to args
+	args.push_back(gameName);
+	//add all arguments
 	while (msg >> buf)
 		args.push_back(buf);
 
@@ -123,7 +124,8 @@ bool handleOneClient(int clientSocket, map<string, vector<int> >& games) {
 	return true;
 }
 
-int findOtherPlayer(map<string, vector<int> >& games, int clientSocket) {//NEED TO WRITE!!!
+//NEED TO WRITE!!!
+int findOtherPlayer(map<string, vector<int> >& games, string& gameName, int clientSocket) {
 	return 0;
 }
 

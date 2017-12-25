@@ -36,8 +36,10 @@ using namespace std;
 //pthread_mutex_t map_mutex;
 
 struct ThreadClientArgs {
-  int clientSocket1;
-  int clientSocket2;
+  int clientSocketFirst;
+  int clientSocketSecond;
+  string gameName;
+  map<string, vector<int> >* games;
 };
 
 struct ThreadServerArgs {
@@ -48,10 +50,12 @@ struct ThreadServerArgs {
 void* threadRunGame(void *clientArgs);
 void* threadRecievePlayers(void* server_socket);
 //bool handleOneClient(int clientSocket, int waitingClient); // OLD DECLARATION
-bool handleOneClient(int clientSocket, map<string, vector<int> >& games);
+bool handleOneClient(int clientSocket, string& gameName, map<string, vector<int> >& games);
 
 bool readCommand(int socket, string* comName, vector<string>* args);
-int findOtherPlayer(map<string, vector<int> >& games, int clientSocket);
+int findOtherPlayer(map<string, vector<int> >& games,string& gameName, int clientSocket);
+
+bool isGameOnList(string& comgameName);
 
 
 

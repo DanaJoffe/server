@@ -21,3 +21,10 @@ void CloseGame::execute(vector<string>& args, map<string, vector<int> >& games,
     }
   }
 }
+
+/*  SOME CODE I SAVED FOR CloseGame FUNC
+ * 	// Close communication with the client
+	close(clientSocket1);
+	close(clientSocket2);
+	return NULL;
+ */
