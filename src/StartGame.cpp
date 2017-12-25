@@ -19,7 +19,6 @@ void StartGame::execute(vector<string>& args, map<string, vector<int> >& games,
 
   //unlock code
 
-  int n;
   int ret;
   if (result.second == false) {
     ret = -1;

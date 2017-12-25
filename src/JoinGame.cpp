@@ -46,3 +46,36 @@ void JoinGame::execute(vector<string>& args, map<string, vector<int> >& games,
 
   //create thread and call run game, pass map as parameter
 }
+
+/*
+ * SOME CODE I SAVED FOR JOIN FUNC
+ *
+	/// join ////
+
+	//start a game between both clients
+
+	int color = 1;
+	int n = write(clientSocket, &color, sizeof(color));
+	if (n == -1) {
+		cout << "Error writing color to socket" << endl;
+		return NULL;
+	}
+
+	color = 2;
+	n = write(clientSocket2, &color, sizeof(color));
+	if (n == -1) {
+		cout << "Error writing color to socket" << endl;
+		return NULL;
+	}
+
+	struct ThreadClientArgs args;
+	args.clientSocket1 = clientSocket;
+	args.clientSocket2 = clientSocket2;
+
+	pthread_t thread;
+	int rc = pthread_create(&thread, NULL, threadRunGame, &args);
+	if (rc) {
+		cout << "Error: unable to create thread, " << rc << endl;
+		exit(-1);
+	}
+*/

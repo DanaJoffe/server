@@ -33,15 +33,11 @@ void Server::start() {
 	// Start listening to incoming connections
 	listen(serverSocket_, MAX_CONNECTED_CLIENTS);
 
-
 	map<string, vector<int> > games;
-	//////
+
 	struct ThreadServerArgs args;
 	args.serverSocket = serverSocket_;
 	args.games = &games;
-	//////
-
-
 
 	pthread_t thread;
 	int rc = pthread_create(&thread, NULL, threadRecievePlayers, &args);

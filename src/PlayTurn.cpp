@@ -40,3 +40,18 @@ void PlayTurn::execute(vector<string>& args, map<string, vector<int> >& games,
     coordinate.clear();
   }
 }
+
+/*SOME CODE I SAVED FOR PLAY TURN FUNC
+ * // writing row
+	n = write(waitingClient, &row, sizeof(row));
+	if (n == -1) {
+		cout << "Error writing size to socket" << endl;
+		return false;
+	}
+	// writing col
+	n = write(waitingClient, &col, sizeof(col));
+	if (n == -1) {
+		cout << "Error writing size to socket" << endl;
+		return false;
+	}
+ */

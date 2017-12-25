@@ -15,10 +15,7 @@
 using namespace std;
 
 
-//input message status
-
-
-/*
+/* ********NEED A FIX************
  * Communication Protocol description:
  * the server works with 2 clients, and from each client it gets 2 messages maximum:
  * 1. the client status (integer)
@@ -48,26 +45,6 @@ public:
 	 * stops server.
 	 */
 	void stop();
-
-
-	/*
-	 * sends and receives messages to 2 clients.
-	 */
-//	void handleTwoClients(int clientSocket1, int clientSocket2);
-
-
-
-	/*
-	 * receives messages from one client and sends them to the waiting client
-	 */
-//	bool handleOneClient(int clientSocket, int waitingClient);
-
-
-	/*
-	 *checks if client disconnected
-	 */
-//	bool is_client_closed(int cs);
-
 
 private:
 	int port_;
