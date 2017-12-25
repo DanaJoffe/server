@@ -5,20 +5,30 @@
  *      Author: chaviva
  */
 
-#include <JoinGame.h>
+#include "JoinGame.h"
+#include "thread.h"
 
 void JoinGame::execute(vector<string>& args, map<string, vector<int> >& games,
     int client_socket) {
 
-  //lock min code
-  //use copy of sockets for the rest
+  vector<int> game_clients;
+  string game_name;
+  map<string, vector<int> >::iterator it;
+  int result;
 
   //find game
-  map<string, vector<int> >::iterator it;
+  pthread_mutex_lock(&map_mutex);
   it = games.find(args[0]);
+  if (it != games.end() && it->second.size() == 1) {
+    game_name = it->first;
+    //add player to game
+    it->second.push_back(client_socket);
+    game_clients = it->second;
+  }
+  pthread_mutex_unlock(&map_mutex);
+
   //inform client if player can join requested game
-  int result;
-  if (it == games.end() || it->second.size() == 2) {
+  if (game_clients.empty()) {
     result = -1;
   } else {
     result = 1;
@@ -27,24 +37,27 @@ void JoinGame::execute(vector<string>& args, map<string, vector<int> >& games,
   if (n == -1) {
     cout << "Error writing result to socket" << endl;
   }
-  //if player can join game
-  if (result == 1) {
-    //add player to game
-    it->second.push_back(client_socket);
+
+  //close socket if didn't succeed to join game
+  if (result == -1) {
+    close(client_socket);
+  //else, start game
+  } else {
     //send players their colors
     int color = 1;
-    n = write(it->second[0], &color, sizeof(color));
+    n = write(game_clients[0], &color, sizeof(color));
     if (n == -1) {
       cout << "Error writing color to socket" << endl;
     }
     color = 2;
-    n = write(it->second[1], &color, sizeof(color));
+    n = write(game_clients[1], &color, sizeof(color));
     if (n == -1) {
       cout << "Error writing color to socket" << endl;
     }
+    //run game
+      //create gameManager
+      //call run game, pass map, game_name, clients as parameter
   }
-
-  //create thread and call run game, pass map as parameter
 }
 
 /*

@@ -6,17 +6,19 @@
  */
 
 #include "ListGames.h"
+#include "thread.h"
 
 void ListGames::execute(vector<string>& args, map<string, vector<int> >& games,
     int client_socket) {
-  //lock
-  //copy map
-  //unlock
+
+  pthread_mutex_lock(&map_mutex);
+  map<string, vector<int> >& game_list(games);
+  pthread_mutex_unlock(&map_mutex);
 
   //write string of available games to send to client
   stringstream available_games;
   map<string, vector<int> >::iterator it;
-  for (it = games.begin(); it != games.end(); it++) {
+  for (it = game_list.begin(); it != game_list.end(); it++) {
     if (it->second.size() == 1) {
       available_games << it->first << " "<< endl;
     }

@@ -31,10 +31,11 @@
 #include <poll.h>
 //#include <map>
 
+using namespace std;
 
 
 enum Status {NO_MOVES, HAS_MOVE, END};
-using namespace std;
+
 
 extern pthread_mutex_t map_mutex;
 

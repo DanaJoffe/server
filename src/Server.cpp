@@ -39,6 +39,8 @@ void Server::start() {
 	args.serverSocket = serverSocket_;
 	args.handler = &handler;
 
+//	map_mutex = PTHREAD_MUTEX_INITIALIZER; //check if we need this
+
 	pthread_t thread;
 	int rc = pthread_create(&thread, NULL, tRecievePlayers, &args);
 	if (rc) {
