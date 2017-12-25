@@ -8,7 +8,10 @@
 #ifndef INCLUDE_THREADS_H_
 #define INCLUDE_THREADS_H_
 
-#include <CommandManager.h>
+//#include "CommandManager.h"
+#include "ClientHandler.h"
+
+
 
 #include <pthread.h>
 #include <cstdlib>
@@ -33,7 +36,7 @@
 enum Status {NO_MOVES, HAS_MOVE, END};
 using namespace std;
 
-//pthread_mutex_t map_mutex;
+extern pthread_mutex_t map_mutex;
 
 struct ThreadClientArgs {
   int clientSocketFirst;
@@ -42,27 +45,31 @@ struct ThreadClientArgs {
   map<string, vector<int> >* games;
 };
 
+class ClientHandler;
+
 struct ThreadServerArgs {
   int serverSocket;
+  ClientHandler* handler;
+};
+
+struct ClientMapArgs {
+  int clientSocket;
   map<string, vector<int> >* games;
 };
 
-void* threadRunGame(void *clientArgs);
-void* threadRecievePlayers(void* server_socket);
-//bool handleOneClient(int clientSocket, int waitingClient); // OLD DECLARATION
-bool handleOneClient(int clientSocket, string& gameName, map<string, vector<int> >& games);
-
-bool readCommand(int socket, string* comName, vector<string>* args);
-int findOtherPlayer(map<string, vector<int> >& games,string& gameName, int clientSocket);
-
-bool isGameOnList(string& comgameName);
-
-
-
-bool is_client_closed(int cs);
-
+void* tRecievePlayers(void* server_socket);
 string readStringFromSocket(int length, int socket);
-Status PlayDecoder(string message, int* row, int* col);
+
+//bool handleOneClient(int clientSocket, int waitingClient); // OLD DECLARATION
+
+//bool readCommand(int socket, string* comName, vector<string>* args);
+
+
+void* tTreatClient(void *serverArgs);
+bool readCommand(int socket, string* comName, vector<string>* args);
+
+
+
 
 
 #endif /* INCLUDE_THREADS_H_ */

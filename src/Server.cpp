@@ -33,14 +33,14 @@ void Server::start() {
 	// Start listening to incoming connections
 	listen(serverSocket_, MAX_CONNECTED_CLIENTS);
 
-	map<string, vector<int> > games;
+	ClientHandler handler = ClientHandler();
 
 	struct ThreadServerArgs args;
 	args.serverSocket = serverSocket_;
-	args.games = &games;
+	args.handler = &handler;
 
 	pthread_t thread;
-	int rc = pthread_create(&thread, NULL, threadRecievePlayers, &args);
+	int rc = pthread_create(&thread, NULL, tRecievePlayers, &args);
 	if (rc) {
 		cout << "Error: unable to create thread, " << rc << endl;
 		exit(-1);
@@ -50,27 +50,19 @@ void Server::start() {
 	while(strcmp(input.c_str(), "exit") != 0) {
 		getline(cin, input);
 	}
-
-
-	cout << "games contain:\n";
-	map<string, vector<int> >::iterator it;
-	for (it=games.begin(); it!=games.end(); ++it) {
-		cout << it->first << " => ";
-		for (unsigned i = 0; i < it->second.size(); i++) {
-			cout << " " << it->second[i] << " ";
-	    }
-		cout << endl;
-	}
-
-
-
-	// games are over
-	//closing sockets
-	//
-
-
-
+	handler.closeClients();
 }
+
+//	cout << "games contain:\n";
+//	map<string, vector<int> >::iterator it;
+//	for (it=games.begin(); it!=games.end(); ++it) {
+//		cout << it->first << " => ";
+//		for (unsigned i = 0; i < it->second.size(); i++) {
+//			cout << " " << it->second[i] << " ";
+//	    }
+//		cout << endl;
+//	}
+
 //	// Define the client socket's structures
 //	struct sockaddr_in clientAddress;
 //	socklen_t clientAddressLen;
