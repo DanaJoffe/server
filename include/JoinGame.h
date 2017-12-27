@@ -18,8 +18,7 @@
 class JoinGame: public Command {
 public:
   JoinGame() {};
-  virtual void execute(vector<string>& args, map<string, vector<int> >& games,
-                     int client_socket);
+  virtual void execute(vector<string>& args, int client_socket);
   virtual ~JoinGame() {};
 };
 

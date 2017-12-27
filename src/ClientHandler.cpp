@@ -10,23 +10,27 @@
 
 
 void* tRecievePlayers1(void* server_socket) {
-	struct ServerSocketArg* arg2 = (struct ServerSocketArg*)server_socket;
-	int serverSocket = arg2->serverSocket;
+//	struct ServerSocketArg* arg2 = (struct ServerSocketArg*)server_socket;
+//	int serverSocket = arg2->serverSocket;
+
+	int* serverSocketAdd = (int*)server_socket;
+	int serverSocket = *serverSocketAdd;
+
 	ClientHandler handler = ClientHandler();
 
 	// Define the client socket's structures
-		struct sockaddr_in clientAddress;
-		socklen_t clientAddressLen;
+	struct sockaddr_in clientAddress;
+	socklen_t clientAddressLen;
 
-		while (true) {
-			cout << "Waiting for client connections..." << endl;
-			// Accept a new client connection
-			int clientSocket = accept(serverSocket, (struct sockaddr *)&clientAddress, &clientAddressLen);
-			cout << "Client connected" << endl;
-			if (clientSocket == -1)
-				throw "Error on accept";
+	while (true) {
+		cout << "Waiting for client connections..." << endl;
+		// Accept a new client connection
+		int clientSocket = accept(serverSocket, (struct sockaddr *)&clientAddress, &clientAddressLen);
+		cout << "Client connected" << endl;
+		if (clientSocket == -1)
+			throw "Error on accept";
 
-		handler.handle(clientSocket);
+	    handler.handle(clientSocket);
 	}
 }
 

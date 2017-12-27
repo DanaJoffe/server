@@ -23,8 +23,7 @@ using namespace std;
 class CommandManager {
 public:
   CommandManager();
-  void executeCommand(string command, vector<string>& args,
-                      map<string, vector<int> >& games, int client_socket);
+  void executeCommand(string command, vector<string>& args, int client_socket);
   ~CommandManager();
 
 private:

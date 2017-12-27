@@ -66,10 +66,8 @@ void* tTreatClient(void *clientMapArgs) {
 		cout <<"args: "<< args[0] << endl;
 	}
 
-
-	GameManager* gameManager = GameManager::getInstance();
 	CommandManager comManager;
-	comManager.executeCommand(commandName, args, *gameManager->getGames(), clientSocket);
+	comManager.executeCommand(commandName, args, clientSocket);
 
 
 	cout << "tTreatClient - finish treatment" <<endl;

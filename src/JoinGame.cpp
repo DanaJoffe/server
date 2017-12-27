@@ -7,9 +7,10 @@
 
 #include "JoinGame.h"
 
-void JoinGame::execute(vector<string>& args, map<string, vector<int> >& games,
-    int client_socket) {
+void JoinGame::execute(vector<string>& args, int client_socket) {
 
+  GameManager* gameManager = GameManager::getInstance();
+  map<string, vector<int> >& games = *gameManager->getGames();
   string game_name;
   vector<int> game_clients;
   map<string, vector<int> >::iterator it;
@@ -17,16 +18,12 @@ void JoinGame::execute(vector<string>& args, map<string, vector<int> >& games,
 
   //find game
   pthread_mutex_lock(&map_mutex);
-  it = games.find(args[0]);
-  if (it != games.end() && it->second.size() == 1) {
-	  cout << "game exists!" <<endl;
-	game_name = it->first.c_str();
-    //add player to game
-    it->second.push_back(client_socket);
-    game_clients = it->second;
+  if (gameManager->isGameExist(args[0]) && gameManager->playersAmount(args[0]) == 1) {
+	  game_name = args[0];
+	  gameManager->addPlayerToGame(game_name, client_socket);
+	  game_clients = gameManager->getPlayers(game_name);
   }
   pthread_mutex_unlock(&map_mutex);
-
 
   //inform client if player can join requested game
   if (game_clients.empty()) {
@@ -65,35 +62,3 @@ void JoinGame::execute(vector<string>& args, map<string, vector<int> >& games,
   }
 }
 
-/*
- * SOME CODE I SAVED FOR JOIN FUNC
- *
-	/// join ////
-
-	//start a game between both clients
-
-	int color = 1;
-	int n = write(clientSocket, &color, sizeof(color));
-	if (n == -1) {
-		cout << "Error writing color to socket" << endl;
-		return NULL;
-	}
-
-	color = 2;
-	n = write(clientSocket2, &color, sizeof(color));
-	if (n == -1) {
-		cout << "Error writing color to socket" << endl;
-		return NULL;
-	}
-
-	struct ThreadClientArgs args;
-	args.clientSocket1 = clientSocket;
-	args.clientSocket2 = clientSocket2;
-
-	pthread_t thread;
-	int rc = pthread_create(&thread, NULL, threadRunGame, &args);
-	if (rc) {
-		cout << "Error: unable to create thread, " << rc << endl;
-		exit(-1);
-	}
-*/

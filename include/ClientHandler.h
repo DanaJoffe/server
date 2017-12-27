@@ -34,19 +34,8 @@ public:
 
 };
 
-struct ServerSocketArg {
-//  ClientHandler* handler;
-  int serverSocket;
-};
-
-struct ThreadServerArgs {
-  int serverSocket;
-//  ClientHandler* handler;
-};
-
 
 void* tRecievePlayers1(void* server_socket);
-
 
 
 

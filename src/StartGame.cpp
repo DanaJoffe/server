@@ -7,8 +7,10 @@
 
 #include "StartGame.h"
 
-void StartGame::execute(vector<string>& args, map<string, vector<int> >& games,
-    int client_socket) {
+void StartGame::execute(vector<string>& args, int client_socket) {
+
+  GameManager* gameManager = GameManager::getInstance();
+  map<string, vector<int> >& games = *gameManager->getGames();
 
   //add game name to map with client_socket as player 1
   vector<int> players_sockets;

@@ -13,7 +13,7 @@ using namespace std;
 
 //run server
 int main() {
-try {
+  try {
 
   //get server port number from file
   int port_num;
@@ -27,17 +27,17 @@ try {
   port_file.close();
   //construct and run server
   Server server(port_num);
-  try {
+//  try {
     server.start();
-  } catch (const char *msg) {
-    cout << "Cannot start server. Reason: " << msg << endl;
-    exit(-1);
-  }
+//  } catch (const char *msg) {
+//    cout << "Cannot start server. Reason: " << msg << endl;
+//    exit(-1);
+//  }
   //stop server
   server.stop();
 
-}catch (const char* msg) {
+  }catch (const char* msg) {
 	cout << msg << endl;
-	}
+  }
   return 0;
 }

@@ -33,6 +33,12 @@ class GameManager {
 public:
 	static GameManager* getInstance();
 	int addGame(string gameName, int playerSocket);
+	int addPlayerToGame(string gameName, int playerSocket);
+	void deleteGame(string gameName);
+
+	void informPlayerGameCloses(int clientSocket);
+
+
 	map<string, vector<int> >* getGames();
 	bool isGameExist(string gameName);
 	int playersAmount(string gameName);

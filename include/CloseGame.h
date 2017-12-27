@@ -15,8 +15,7 @@
 class CloseGame: public Command {
 public:
   CloseGame() {};
-  virtual void execute(vector<string>& args, map<string, vector<int> >& games,
-                        int client_socket);
+  virtual void execute(vector<string>& args, int client_socket);
   virtual ~CloseGame() {};
 };
 

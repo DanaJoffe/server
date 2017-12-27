@@ -18,8 +18,7 @@
 class ListGames: public Command {
 public:
   ListGames() {};
-  virtual void execute(vector<string>& args, map<string, vector<int> >& games,
-                     int client_socket);
+  virtual void execute(vector<string>& args, int client_socket);
   virtual ~ListGames() {};
 };
 

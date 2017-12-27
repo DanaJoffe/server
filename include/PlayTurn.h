@@ -16,8 +16,7 @@
 class PlayTurn: public Command {
 public:
   PlayTurn() {};
-  virtual void execute(vector<string>& args, map<string, vector<int> >& games,
-                     int client_socket);
+  virtual void execute(vector<string>& args, int client_socket);
   virtual ~PlayTurn() {};
 };
 

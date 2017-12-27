@@ -7,14 +7,15 @@
 
 #include "ListGames.h"
 
-void ListGames::execute(vector<string>& args, map<string, vector<int> >& games,
-    int client_socket) {
+void ListGames::execute(vector<string>& args, int client_socket) {
 	cout <<"ListGames::execute" <<endl;
 
 
+  GameManager* gameManager = GameManager::getInstance();
+
 
   pthread_mutex_lock(&map_mutex);
-  map<string, vector<int> >& game_list(games);
+  map<string, vector<int> >& game_list(*gameManager->getGames());//change
   pthread_mutex_unlock(&map_mutex);
 
   //write string of available games to send to client
@@ -52,4 +53,7 @@ void ListGames::execute(vector<string>& args, map<string, vector<int> >& games,
   if (n == -1) {
     cout << "Error writing available games to socket" << endl;
   }
+
+  //close client's socket
+  close(client_socket);
 }

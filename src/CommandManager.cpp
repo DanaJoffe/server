@@ -13,10 +13,9 @@ CommandManager::CommandManager() {
   commands_["join"] = new JoinGame();
 }
 
-void CommandManager::executeCommand(string command, vector<string>& args,
-    map<string, vector<int> >& games, int client_socket) {
+void CommandManager::executeCommand(string command, vector<string>& args, int client_socket) {
   Command *cmd = commands_[command];
-  cmd->execute(args, games, client_socket);
+  cmd->execute(args, client_socket);
 }
 
 CommandManager::~CommandManager() {
