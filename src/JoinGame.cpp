@@ -27,6 +27,7 @@ void JoinGame::execute(vector<string>& args, map<string, vector<int> >& games,
   }
   pthread_mutex_unlock(&map_mutex);
 
+
   //inform client if player can join requested game
   if (game_clients.empty()) {
 	  cout << "inform client game doesn't exist" <<endl;

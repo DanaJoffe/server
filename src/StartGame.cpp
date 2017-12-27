@@ -24,6 +24,8 @@ void StartGame::execute(vector<string>& args, map<string, vector<int> >& games,
   } else {
     ret = 1;
   }
+  cout << "will write result of insert" << endl;
+
   //write to client if succeeded to start the game
   int n = write(client_socket, &ret, sizeof(ret));
   if (n == -1) {

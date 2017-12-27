@@ -33,6 +33,7 @@ void Server::start() {
 	// Start listening to incoming connections
 	listen(serverSocket_, MAX_CONNECTED_CLIENTS);
 
+
 	cout << " Server::start()" <<endl;
 	GameManager* gameManager = GameManager::getInstance();
 
@@ -60,6 +61,7 @@ void Server::start() {
 		getline(cin, input);
 	}
 	gameManager->closeGames();
+
 }
 
 //	cout << "games contain:\n";

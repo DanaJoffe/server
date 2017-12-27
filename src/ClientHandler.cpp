@@ -37,6 +37,7 @@ void ClientHandler::handle(int clientSocket) {
 
 	clientMapArgs->clientSocket = clientSocket;
 
+
 	pthread_t thread;
 	int rc = pthread_create(&thread, NULL, tTreatClient, clientMapArgs);
 	if (rc) {
