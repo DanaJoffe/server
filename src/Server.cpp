@@ -33,20 +33,23 @@ void Server::start() {
 	// Start listening to incoming connections
 	listen(serverSocket_, MAX_CONNECTED_CLIENTS);
 
-	ClientHandler handler = ClientHandler();
-
-
 	cout << " Server::start()" <<endl;
-
+	GameManager* gameManager = GameManager::getInstance();
 
 	struct ThreadServerArgs args;
 	args.serverSocket = serverSocket_;
-	args.handler = &handler;
 
 //	map_mutex = PTHREAD_MUTEX_INITIALIZER; //check if we need this
 
 	pthread_t thread;
-	int rc = pthread_create(&thread, NULL, tRecievePlayers, &args);
+
+
+	struct ServerSocketArg arg2;
+	arg2.serverSocket = serverSocket_;
+
+
+	int rc = pthread_create(&thread, NULL, tRecievePlayers1, &arg2);
+//	int rc = pthread_create(&thread, NULL, tRecievePlayers, &args);
 	if (rc) {
 		cout << "Error: unable to create thread, " << rc << endl;
 		exit(-1);
@@ -56,7 +59,7 @@ void Server::start() {
 	while(strcmp(input.c_str(), "exit") != 0) {
 		getline(cin, input);
 	}
-	handler.closeClients();
+	gameManager->closeGames();
 }
 
 //	cout << "games contain:\n";

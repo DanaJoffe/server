@@ -8,9 +8,7 @@
 #ifndef INCLUDE_THREADS_H_
 #define INCLUDE_THREADS_H_
 
-//#include "CommandManager.h"
-#include "ClientHandler.h"
-
+#include "CommandManager.h"
 
 
 #include <pthread.h>
@@ -23,16 +21,15 @@
 #include <string.h>
 #include <stdio.h>
 #include <sstream>
-//#include <vector>
+#include <vector>
 #include <stdlib.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <unistd.h>
 #include <poll.h>
-//#include <map>
+#include <map>
 
-//#include <thread>
-//#include <mutex>
+
 
 using namespace std;
 
@@ -49,29 +46,16 @@ struct ThreadClientArgs {
   map<string, vector<int> >* games;
 };
 
-class ClientHandler;
-
-struct ThreadServerArgs {
-  int serverSocket;
-  ClientHandler* handler;
-};
 
 struct ClientMapArgs {
   int clientSocket;
-  map<string, vector<int> >* games;
 };
 
-void* tRecievePlayers(void* server_socket);
+
+//void* tRecievePlayers(void* server_socket);
 string readStringFromSocket(int length, int socket);
-
-//bool handleOneClient(int clientSocket, int waitingClient); // OLD DECLARATION
-
-//bool readCommand(int socket, string* comName, vector<string>* args);
-
-
 void* tTreatClient(void *serverArgs);
 bool readCommand(int socket, string* comName, vector<string>* args);
-
 
 
 

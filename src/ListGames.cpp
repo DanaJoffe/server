@@ -9,6 +9,9 @@
 
 void ListGames::execute(vector<string>& args, map<string, vector<int> >& games,
     int client_socket) {
+	cout <<"ListGames::execute" <<endl;
+
+
 
   pthread_mutex_lock(&map_mutex);
   map<string, vector<int> >& game_list(games);
@@ -32,6 +35,10 @@ void ListGames::execute(vector<string>& args, map<string, vector<int> >& games,
   }
   //send string of available games
   string msg = available_games.str();
+
+  cout <<"ListGames::execute: sending to client: " <<msg <<endl;
+
+
   n = write(client_socket, msg.c_str(), size);
   if (n == -1) {
     cout << "Error writing available games to socket" << endl;

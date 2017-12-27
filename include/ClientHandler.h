@@ -14,12 +14,11 @@
 #include <string.h>
 #include <iostream>
 
-#include "threads.h"
+//#include "threads.h"
 #include "CommandManager.h"
 
 
 using namespace std;
-
 
 
 class ClientHandler {
@@ -30,13 +29,23 @@ public:
 	ClientHandler();
 	void handle(int clientSocket);
 	void closeClients();
-	map<string, vector<int> >* getGames();
 
-	~ClientHandler() {delete this->games;}
+	~ClientHandler() {}
 
-private:
-	map<string, vector<int> >* games;
 };
+
+struct ServerSocketArg {
+//  ClientHandler* handler;
+  int serverSocket;
+};
+
+struct ThreadServerArgs {
+  int serverSocket;
+//  ClientHandler* handler;
+};
+
+
+void* tRecievePlayers1(void* server_socket);
 
 
 

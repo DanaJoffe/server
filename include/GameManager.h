@@ -10,24 +10,56 @@
 
 #include "threads.h"
 
+//class GameManager {
+//public:
+//  /*
+//   * constructs.
+//   */
+//	GameManager(){};
+//	bool is_client_closed(int cs);
+//	bool isGameOnList(string& comgameName);
+//
+//	void closeGame(string& gameName, map<string, vector<int> >& games,  int waitingClient);
+//	bool playTurn(vector<string>& args, int waitingClient);
+//	void RunGame(int clientSocket1 , int clientSocket2, string& gameName, map<string, vector<int> >& games);
+//	bool handleOneClient(int clientSocket, int waitingclient, string& gameName, map<string, vector<int> >& games);
+//
+//private:
+//
+//};
+
+//Singleton version
 class GameManager {
 public:
-  /*
-   * constructs.
-   */
-	GameManager(){};
-	bool is_client_closed(int cs);
+	static GameManager* getInstance();
+	int addGame(string gameName, int playerSocket);
+	map<string, vector<int> >* getGames();
+	bool isGameExist(string gameName);
+	int playersAmount(string gameName);
+	vector<int>& getPlayers(string gameName);
+	void closeGames();
 
-	bool isGameOnList(string& comgameName);
+	void RunGame(string& gameName);
 
-	void closeGame(string& gameName, map<string, vector<int> >& games,  int waitingClient);
-	bool playTurn(vector<string>& args, int waitingClient);
-	void RunGame(int clientSocket1 , int clientSocket2, string& gameName, map<string, vector<int> >& games);
-	bool handleOneClient(int clientSocket, int waitingclient, string& gameName, map<string, vector<int> >& games);
+
+//	void RunGame(int clientSocket1 , int clientSocket2, string& gameName, map<string, vector<int> >& games);
 
 private:
+	GameManager(): games(new map<string, vector<int> >){}
+	map<string, vector<int> >* games;
+	static GameManager* instance;
 
+	bool is_client_closed(int cs);
+	bool isGameOnList(string& comgameName);
+	void closeGame(string& gameName, map<string, vector<int> >& games,  int waitingClient);
+	bool playTurn(vector<string>& args, int waitingClient);
+	bool handleOneClient(int clientSocket, int waitingclient, string& gameName, map<string, vector<int> >& games);
 };
+
+
+
+
+
 
 
 

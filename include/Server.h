@@ -8,12 +8,11 @@
 #ifndef SERVER_H_
 #define SERVER_H_
 
+#include "ClientHandler.h"
 
 
+//using namespace std;
 
-#include "threads.h"
-
-using namespace std;
 
 
 /* ********NEED A FIX************

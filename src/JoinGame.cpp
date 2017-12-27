@@ -10,8 +10,8 @@
 void JoinGame::execute(vector<string>& args, map<string, vector<int> >& games,
     int client_socket) {
 
-  vector<int> game_clients;
   string game_name;
+  vector<int> game_clients;
   map<string, vector<int> >::iterator it;
   int result;
 
@@ -19,7 +19,8 @@ void JoinGame::execute(vector<string>& args, map<string, vector<int> >& games,
   pthread_mutex_lock(&map_mutex);
   it = games.find(args[0]);
   if (it != games.end() && it->second.size() == 1) {
-    game_name = it->first;
+	  cout << "game exists!" <<endl;
+	game_name = it->first.c_str();
     //add player to game
     it->second.push_back(client_socket);
     game_clients = it->second;
@@ -28,8 +29,11 @@ void JoinGame::execute(vector<string>& args, map<string, vector<int> >& games,
 
   //inform client if player can join requested game
   if (game_clients.empty()) {
+	  cout << "inform client game doesn't exist" <<endl;
+
     result = -1;
   } else {
+	  cout << "inform client game exists" <<endl;
     result = 1;
   }
   int n = write(client_socket, &result, sizeof(result));
@@ -53,9 +57,10 @@ void JoinGame::execute(vector<string>& args, map<string, vector<int> >& games,
     if (n == -1) {
       cout << "Error writing color to socket" << endl;
     }
+
     //run game
-     GameManager game_manager;
-     game_manager.RunGame(game_clients[0], game_clients[1], game_name, games);
+	GameManager* game_manager = GameManager::getInstance();
+	game_manager->RunGame(game_name);
   }
 }
 
