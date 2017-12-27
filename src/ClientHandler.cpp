@@ -18,18 +18,17 @@ ClientHandler::ClientHandler() {
 void ClientHandler::handle(int clientSocket) {
 	cout << "ClientHandler::handle" <<endl;
 
-	struct ClientMapArgs clientMapArgs;
-	clientMapArgs.clientSocket = clientSocket;
-	clientMapArgs.games = this->getGames();
+	struct ClientMapArgs* clientMapArgs = new struct ClientMapArgs();
+	clientMapArgs->clientSocket = clientSocket;
+	clientMapArgs->games = this->getGames();
 
 	pthread_t thread;
-	int rc = pthread_create(&thread, NULL, tTreatClient, &clientMapArgs);
+	int rc = pthread_create(&thread, NULL, tTreatClient, clientMapArgs);
 	if (rc) {
 		cout << "Error: unable to create thread, " << rc << endl;
 		exit(-1);
 	}
-
-	pthread_exit (NULL);
+	return;
 }
 
 void ClientHandler::closeClients() {

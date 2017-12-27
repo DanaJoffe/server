@@ -33,7 +33,7 @@ void Server::start() {
 	// Start listening to incoming connections
 	listen(serverSocket_, MAX_CONNECTED_CLIENTS);
 
-	ClientHandler handler = ClientHandler();
+	ClientHandler* handler = new ClientHandler();
 
 
 	cout << " Server::start()" <<endl;
@@ -41,7 +41,7 @@ void Server::start() {
 
 	struct ThreadServerArgs args;
 	args.serverSocket = serverSocket_;
-	args.handler = &handler;
+	args.handler = handler;
 
 //	map_mutex = PTHREAD_MUTEX_INITIALIZER; //check if we need this
 
@@ -56,7 +56,8 @@ void Server::start() {
 	while(strcmp(input.c_str(), "exit") != 0) {
 		getline(cin, input);
 	}
-	handler.closeClients();
+	handler->closeClients();
+	delete handler;
 }
 
 //	cout << "games contain:\n";

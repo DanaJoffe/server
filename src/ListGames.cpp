@@ -22,10 +22,19 @@ void ListGames::execute(vector<string>& args, map<string, vector<int> >& games,
       available_games << it->first << " "<< endl;
     }
   }
-  //send size of string
+  //get size of string
   available_games.seekg(0, ios::end);
   int size = available_games.tellg();
   available_games.seekg(0, ios::beg);
+
+  if (size == 0) {
+    available_games << "There are no current available games to join." << endl;
+    available_games.seekg(0, ios::end);
+    size = available_games.tellg();
+    available_games.seekg(0, ios::beg);
+  }
+
+  //send size of string
   int n = write(client_socket, &size, sizeof(size));
   if (n == -1) {
     cout << "Error writing string size to socket" << endl;

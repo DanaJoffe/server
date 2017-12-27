@@ -90,9 +90,11 @@ void GameManager::closeGame(string& gameName, map<string, vector<int> >& games, 
 		return;
 	}
 
+	 pthread_mutex_lock(&map_mutex);
 	 map<string, vector<int> >::iterator iter;
 	 iter = games.find(gameName);
 	 vector<int> clients = iter->second;
+	 pthread_mutex_unlock(&map_mutex);
 	 int firstClient = clients[0];
 	 int secondClient = clients[1];
 

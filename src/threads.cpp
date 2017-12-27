@@ -61,6 +61,7 @@ void* tTreatClient(void *clientMapArgs) {
 	CommandManager comManager;
 	comManager.executeCommand(commandName, args, *arguments->games, clientSocket);
 
+	delete arguments;
 	return NULL;
 }
 
@@ -84,8 +85,8 @@ void* tRecievePlayers(void *serverArgs) {
 
 	struct ThreadServerArgs *arguments = (struct ThreadServerArgs *)serverArgs;
 	int serverSocket = arguments->serverSocket;
-	ClientHandler* handler = arguments->handler;
-
+//	ClientHandler* handler = arguments->handler;
+	ClientHandler handler = ClientHandler();
 	// Define the client socket's structures
 	struct sockaddr_in clientAddress;
 	socklen_t clientAddressLen;
@@ -103,7 +104,8 @@ void* tRecievePlayers(void *serverArgs) {
 
 
 		cout << "tRecievePlayers: handler->handle" <<endl;
-		handler->handle(clientSocket);
+//		handler->handle(clientSocket);
+		handler.handle(clientSocket);
 	}
 }
 
