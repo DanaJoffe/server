@@ -46,6 +46,9 @@ void Server::start() {
 	}
 
 	gm->closeGames();
+
+	//need to close threads!
+
 //	this->stop();
 }
 

@@ -15,8 +15,20 @@
 
 class StartGame: public Command {
 public:
+  /*
+   * constructor
+   */
   StartGame() {};
+  /*
+   * add new game to list of games with client as first player.
+   * send client 1 if succeeded, else send -1
+   * if didn't succeed - close client's socket
+   * input: args - name of game to add, client_socket - client to add as player
+   */
   virtual void execute(vector<string>& args, int client_socket);
+  /*
+   * destuctor
+   */
   virtual ~StartGame() {};
 };
 

@@ -17,8 +17,14 @@ using namespace std;
 
 class Command {
 public:
-//  Command() {};
+  /*
+   * exectute command from client, with command args.
+   * input: vector<string>& args, int client_socket
+   */
   virtual void execute(vector<string>& args, int client_socket) = 0;
+  /*
+   * destructor - no need to delete anything.
+   */
   virtual ~Command() {};
 };
 

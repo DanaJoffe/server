@@ -27,14 +27,21 @@ public:
    * constructor.
    */
 	ClientHandler();
+	/*
+	 *creates thread to treat client.
+	 *input: client's socket
+	 */
 	void handle(int clientSocket);
-	void closeClients();
-
+	/*
+	 * destructor
+	 */
 	~ClientHandler() {}
-
 };
 
-
+/*
+ * accepts new clients and sends them to client handler.
+ * this function will be called in a new thread.
+ */
 void* tRecievePlayers1(void* server_socket);
 
 

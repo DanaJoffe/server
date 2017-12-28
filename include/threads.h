@@ -28,7 +28,6 @@
 #include <stdlib.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
-#include <unistd.h>
 #include <poll.h>
 #include <map>
 
@@ -56,12 +55,23 @@ struct ClientMapArgs {
   int clientSocket;
 };
 
-
-//void* tRecievePlayers(void* server_socket);
+/*
+ * read string of specified length from socket.
+ * input: length - length of string, socket - socket to read from.
+ * output: string read from socket
+ */
 string readStringFromSocket(int length, int socket);
-void* tTreatClient(void *serverArgs);
+/*
+ * read command from client. will read name of command and arguments of command.
+ * ouput: true if succeeded, else false
+ */
 bool readCommand(int socket, string* comName, vector<string>* args);
-
+/*
+ * treat specific client. read command from client and execute it.
+ * this function will be called in a new thread.
+ * input: client socket
+ */
+void* tTreatClient(void *clientMapArgs);
 
 
 

@@ -13,9 +13,9 @@ void JoinGame::execute(vector<string>& args, int client_socket) {
   int result;
   vector<int> game_clients;
 //  pthread_mutex_lock(&map_mutex);
-  if (!gameManager->isGameExist(game_name)) {
+  if (!gameManager->doesGameExist(game_name) || gameManager->playersAmount(game_name) != 1) {
 //	  pthread_mutex_unlock(&map_mutex);
-	  cout << "inform client game doesn't exist" <<endl;
+	  cout << "inform client game doesn't exist or can't join game" <<endl;
 	  result = -1;
   } else {
 	  cout << "inform client game exists" <<endl;
@@ -24,12 +24,12 @@ void JoinGame::execute(vector<string>& args, int client_socket) {
 	  pthread_mutex_lock(&map_mutex);
 	  cout << "step 1" <<endl;
 
-	  if (gameManager->isGameExist(game_name) && gameManager->playersAmount(game_name) == 1) {
+//	  if (gameManager->doesGameExist(game_name) && gameManager->playersAmount(game_name) == 1) {
 		  cout << "step 2" <<endl;
 		  gameManager->addPlayerToGame(game_name, client_socket);
 		  cout << "step 3" <<endl;
 		  game_clients = gameManager->getPlayers(game_name);
-	  }
+//	  }
 	  pthread_mutex_unlock(&map_mutex);
 	  cout << "step 4" <<endl;
   }

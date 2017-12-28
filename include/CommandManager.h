@@ -22,8 +22,17 @@ using namespace std;
 
 class CommandManager {
 public:
+  /*
+   * constructor
+   */
   CommandManager();
+  /*
+   * execute command from client, with command args
+   */
   void executeCommand(string command, vector<string>& args, int client_socket);
+  /*
+   * destructor - delete command map data member.
+   */
   ~CommandManager();
 
 private:

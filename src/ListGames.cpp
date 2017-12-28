@@ -19,26 +19,29 @@ void ListGames::execute(vector<string>& args, int client_socket) {
   map<string, vector<int> >::iterator it;
   for (it = game_list.begin(); it != game_list.end(); it++) {
     if (it->second.size() == 1) {
-      available_games << it->first << " "<< endl;
+      available_games << it->first << endl;
     }
   }
-  //get size of string
+  //check if string has available games
   available_games.seekg(0, ios::end);
   int size = available_games.tellg();
   available_games.seekg(0, ios::beg);
 
+  stringstream msg;
+
   if (size == 0) {
-    available_games << "There are no current available games to join." << endl;
-    available_games.seekg(0, ios::end);
-    size = available_games.tellg();
-    available_games.seekg(0, ios::beg);
+    msg << "There are no current available games to join." << endl;
   } else {
 	  stringstream title;
 	  title << "Available Games:" <<endl;
-	  title << available_games.str();
-	  available_games.clear();
-	  available_games << title.str();
+	  msg << title.str();
+	  msg << available_games.str();
   }
+
+  //get size of message
+  msg.seekg(0, ios::end);
+  size = msg.tellg();
+  msg.seekg(0, ios::beg);
 
   //send size of string
   int n = write(client_socket, &size, sizeof(size));
@@ -46,12 +49,11 @@ void ListGames::execute(vector<string>& args, int client_socket) {
     cout << "Error writing string size to socket" << endl;
   }
   //send string of available games
-  string msg = available_games.str();
 
-  cout <<"ListGames::execute: sending to client: " <<msg <<endl;
+  cout <<"ListGames::execute: sending to client: " <<msg;
 
 
-  n = write(client_socket, msg.c_str(), size);
+  n = write(client_socket, msg.str().c_str(), size);
   if (n == -1) {
     cout << "Error writing available games to socket" << endl;
   }
