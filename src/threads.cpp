@@ -7,11 +7,9 @@
 
 #include "threads.h"
 
-
+pthread_mutex_t map_mutex;
 
 bool readCommand(int socket, string* comName, vector<string>* args) {
-	cout <<"readCommand" << endl;
-
 	int length;
 	// Read length
 	int n = read(socket, &length, sizeof(length));
@@ -23,14 +21,9 @@ bool readCommand(int socket, string* comName, vector<string>* args) {
 		cout << "Client disconnected" << endl;
 		return false;
 	}
-	cout <<"read length: "<<length << endl;
-
 
 	// Read message
 	string message = readStringFromSocket(length,socket);
-
-	cout <<"read message: "<<message<< endl;
-
 
 	// Interpret
 	string buf; // Have a buffer string
@@ -43,14 +36,8 @@ bool readCommand(int socket, string* comName, vector<string>* args) {
 }
 
 void* tTreatClient(void *clientMapArgs) {
-
-	cout << "tTreatClient" <<endl;
-
 	struct ClientMapArgs *arguments = (struct ClientMapArgs  *)clientMapArgs;
 	int clientSocket = arguments->clientSocket;
-
-	cout << "tTreatClient: clientSocket = " << clientSocket <<endl;
-
 
 	// recieve command and arguments
 	string commandName;
@@ -59,7 +46,6 @@ void* tTreatClient(void *clientMapArgs) {
 	if (b == false)
 		throw "Error reading from socket";
 
-	cout <<"calling command: "<< commandName << endl;
 	if (args.empty()) {
 		cout <<"args: none"<< endl;
 	} else {
@@ -68,9 +54,6 @@ void* tTreatClient(void *clientMapArgs) {
 
 	CommandManager comManager;
 	comManager.executeCommand(commandName, args, clientSocket);
-
-
-	cout << "tTreatClient - finish treatment" <<endl;
 
 	delete arguments;
 	return NULL;
@@ -91,36 +74,3 @@ string readStringFromSocket(int length, int socket) {
 	}
 	return str;
 }
-//void* tRecievePlayers(void *serverArgs) {
-//	cout << "tRecievePlayers" <<endl;
-//
-//	struct ThreadServerArgs *arguments = (struct ThreadServerArgs *)serverArgs;
-//	int serverSocket = arguments->serverSocket;
-//	ClientHandler* handler = arguments->handler;
-//
-//	// Define the client socket's structures
-//	struct sockaddr_in clientAddress;
-//	socklen_t clientAddressLen;
-//
-//	//accept and handle one client
-//	while (true) {
-//		cout << "Waiting for client connections..." << endl;
-//		// Accept a new client connection
-//		int clientSocket = accept(serverSocket, (struct sockaddr *)&clientAddress, &clientAddressLen);
-//		cout << "Client connected" << endl;
-//		if (clientSocket == -1){
-//			cout << "Error on accept" <<endl;
-//			throw "Error on accept";
-//		}
-//
-//
-//		cout << "tRecievePlayers: handler->handle" <<endl;
-//		handler->handle(clientSocket);
-//	}
-//}
-
-
-
-
-
-

@@ -10,9 +10,6 @@
 
 
 void* tRecievePlayers1(void* server_socket) {
-//	struct ServerSocketArg* arg2 = (struct ServerSocketArg*)server_socket;
-//	int serverSocket = arg2->serverSocket;
-
 	int* serverSocketAdd = (int*)server_socket;
 	int serverSocket = *serverSocketAdd;
 
@@ -38,10 +35,7 @@ ClientHandler::ClientHandler() {}
 
 void ClientHandler::handle(int clientSocket) {
 	struct ClientMapArgs *clientMapArgs = new struct ClientMapArgs();
-
 	clientMapArgs->clientSocket = clientSocket;
-
-
 	pthread_t thread;
 	int rc = pthread_create(&thread, NULL, tTreatClient, clientMapArgs);
 	if (rc) {

@@ -8,11 +8,7 @@
 #include "ListGames.h"
 
 void ListGames::execute(vector<string>& args, int client_socket) {
-	cout <<"ListGames::execute" <<endl;
-
-
   GameManager* gameManager = GameManager::getInstance();
-
 
   pthread_mutex_lock(&map_mutex);
   map<string, vector<int> >& game_list(*gameManager->getGames());//change
@@ -36,6 +32,12 @@ void ListGames::execute(vector<string>& args, int client_socket) {
     available_games.seekg(0, ios::end);
     size = available_games.tellg();
     available_games.seekg(0, ios::beg);
+  } else {
+	  stringstream title;
+	  title << "Available Games:" <<endl;
+	  title << available_games.str();
+	  available_games.clear();
+	  available_games << title.str();
   }
 
   //send size of string

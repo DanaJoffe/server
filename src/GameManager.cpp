@@ -19,6 +19,24 @@ GameManager* GameManager::getInstance() {
 		return instance;
 	}
 }
+void GameManager::refreshGameList() {
+	map<string, vector<int> >::iterator it;
+	string gameName;
+	vector<int> clients;
+	unsigned i;
+	for (it = this->games->begin(); it!=this->games->end(); ++it) {
+		clients = it->second;
+		gameName = it->first;
+		i = 0;
+		while (i<clients.size()) {
+			if (this->is_client_closed(clients[i])) {
+				this->deleteGame(gameName);
+				break;
+			}
+		    i++;
+		}
+	}
+}
 
 bool GameManager::isGameExist(string gameName) {
 	cout << "GameManager::isGameExist"<<endl;
@@ -26,7 +44,7 @@ bool GameManager::isGameExist(string gameName) {
 	 //find game
 	map<string, vector<int> >::iterator it;
 	it = this->games->find(gameName);
-	// if didn't find game
+    //if didn't find game
 	if (it == this->games->end()) {
 		return false;
 	}
@@ -55,19 +73,44 @@ bool GameManager::isGameExist(string gameName) {
 
 // returns -1 if game doesn't exist.
 int GameManager::playersAmount(string gameName) {
-//	if (!this->isGameExist(gameName)) {
-//		return -1;
-//	}
-	 map<string, vector<int> >::iterator it;
-	 it = this->games->find(gameName);
-	 return it->second.size();
+	//find game
+	map<string, vector<int> >::iterator it;
+	it = this->games->find(gameName);
+	//if didn't find game
+	if (it == this->games->end()) {
+		return -1;
+	}
+	return it->second.size();
 }
 
 
 // returns 1 if adding done successfully.
 // returns -1 if adding didn't work..
-// returns -2 if game already have 2 clients.
+// returns -2 if game already exist.
 int GameManager::addGame(string gameName, int playerSocket) {
+	if (this->isGameExist(gameName)) {
+		return -2;
+	}
+	vector<int> players_sockets;
+	players_sockets.push_back(playerSocket);
+	pair<map<string, vector<int> >::iterator,bool> result;
+
+	result = this->games->insert(make_pair(gameName, players_sockets));
+	if (result.second == false) {
+	   return -1;
+	}
+	return 1;
+
+//	if (this->playersAmount(gameName) == 2) {
+//		return -2;
+//	}
+//	//game has 1 player - add the second player
+//	map<string, vector<int> >::iterator it;
+//	it = this->games->find(gameName);
+//	it->second.push_back(playerSocket);
+//	return 1;
+}
+int GameManager::addPlayerToGame(string gameName, int playerSocket) {
 	if (!this->isGameExist(gameName)) {
 		vector<int> players_sockets;
 		players_sockets.push_back(playerSocket);
@@ -87,9 +130,6 @@ int GameManager::addGame(string gameName, int playerSocket) {
 	it = this->games->find(gameName);
 	it->second.push_back(playerSocket);
 	return 1;
-}
-int GameManager::addPlayerToGame(string gameName, int playerSocket) {
-	return this->addGame(gameName, playerSocket);
 }
 
 /* check is client is connected and send him a close message
@@ -126,20 +166,18 @@ void GameManager::informPlayerGameCloses(int clientSocket) {
 }
 
 map<string, vector<int> >* GameManager::getGames() {
-	map<string, vector<int> >::iterator it;
-	string gameName;
-	for (it = this->games->begin(); it!=this->games->end(); ++it) {
-		gameName = it->first;
-		this->isGameExist(gameName);
-	}
+//	map<string, vector<int> >::iterator it;
+//	string gameName;
+//	for (it = this->games->begin(); it!=this->games->end(); ++it) {
+//		gameName = it->first;
+//		this->isGameExist(gameName);
+//	}
+	this->refreshGameList();
 	return this->games;
 }
 
-
 vector<int>& GameManager::getPlayers(string gameName) {
-//	if (!this->isGameExist(gameName)) {
-//		throw "Error in GameManager::getPlayers. game does not exist";
-//	}
+	 //find game
 	map<string, vector<int> >::iterator it;
 	it = this->games->find(gameName);
 	return it->second;
@@ -157,20 +195,18 @@ void GameManager::RunGame(string& gameName) {
 	int clientSocket1 = clients[0];
 	int clientSocket2 = clients[1];
 
-
-//	while (isGameOnList(gameName)) {
 	while (true) {
 
 		cout << "GameManager::RunGame: first player" << endl;
 		//handle first client
-		bool isClient1Connected = handleOneClient(clientSocket1, clientSocket2, gameName, *this->getGames()); //return msg
+		bool isClient1Connected = handleOneClient(clientSocket1, clientSocket2, gameName);
 		if (!isClient1Connected) {
 			return;
 		}
 
 		cout << "GameManager::RunGame: second player" << endl;
 		//handle second client
-		bool isClient2Connected = handleOneClient(clientSocket2, clientSocket1, gameName, *this->getGames());
+		bool isClient2Connected = handleOneClient(clientSocket2, clientSocket1, gameName);
 		if (!isClient2Connected) {
 			return;
 		}
@@ -180,47 +216,43 @@ void GameManager::RunGame(string& gameName) {
 
 void GameManager::closeGames() {
 	map<string, vector<int> >::iterator it;
-//	int player1Socket;
-//	int player2Socket;
 	string gameName;
-
 	for (it = this->games->begin(); it!=this->games->end(); ++it) {
 		gameName = it->first;
 		this->deleteGame(gameName);
 	}
-	delete this->games;
+//	delete this->games;
 }
+
 
 
 //////// finish singleton section
 
-bool GameManager::handleOneClient(int clientSocket, int waitingClient, string& gameName, map<string, vector<int> >& games) {
-//	cout << "GameManager::handleOneClient" <<endl;
-
-	int size, n;
+bool GameManager::handleOneClient(int clientSocket, int waitingClient, string& gameName) {
 	// recieve command and arguments
 	string commandName;
 	vector<string> args;
 
-
 	cout << "GameManager::handleOneClient: entering readCommand" <<endl;
 	bool b = readCommand(clientSocket, &commandName, &args);
-	if (b == false)
+	if (b == false) {
+		if (!this->is_client_closed(waitingClient)) {
+			this->informPlayerGameCloses(waitingClient);
+		}
 		return false;
-//		throw "Error reading from socket";
-
+	}
 	if (strcmp(commandName.c_str(), "close") == 0) {
-		closeGame(gameName, games, waitingClient);
+		closeGame(gameName);
 		return false;
 	} else if (strcmp(commandName.c_str(), "play") == 0) {
-		bool b = playTurn(args, waitingClient);
+		bool b = playTurn(args, waitingClient, clientSocket);
 		if (b == false)
 			return false;
 	}
 	return true;
 }
 
-void GameManager::closeGame(string& gameName, map<string, vector<int> >& games,  int waitingClient) {
+void GameManager::closeGame(string& gameName) {
 
 	pthread_mutex_lock(&map_mutex);
 	this->deleteGame(gameName);
@@ -264,26 +296,28 @@ void GameManager::closeGame(string& gameName, map<string, vector<int> >& games, 
 //	 games.erase (gameName);
 }
 
-bool GameManager::playTurn(vector<string>& args, int waitingClient) {
+bool GameManager::playTurn(vector<string>& args, int waitingPlayer, int currentPlayer) {
 	int row = atoi(args[0].c_str());
 	int col = atoi(args[1].c_str());
 
-	if (is_client_closed(waitingClient)) {
+	if (is_client_closed(waitingPlayer)) {
 		cout << "Client disconnected" << endl;
+		this->informPlayerGameCloses(currentPlayer);
 		return false;
 	}
 	// writing row to waitingClient socket
-	int n = write(waitingClient, &row, sizeof(row));
+	int n = write(waitingPlayer, &row, sizeof(row));
 	if (n == -1) {
 		cout << "Error writing size to socket" << endl;
 		return false;
 	}
-	if (is_client_closed(waitingClient)) {
+	if (is_client_closed(waitingPlayer)) {
 		cout << "Client disconnected" << endl;
+		this->informPlayerGameCloses(currentPlayer);
 		return false;
 	}
 	// writing col to waitingClient socket
-	n = write(waitingClient, &col, sizeof(col));
+	n = write(waitingPlayer, &col, sizeof(col));
 	if (n == -1) {
 		cout << "Error writing size to socket" << endl;
 		return false;
@@ -310,11 +344,3 @@ bool GameManager::is_client_closed(int cs) {
 	}
 	return false;
 }
-
-
-
-//NEED TO WRITE
-bool GameManager::isGameOnList(string& comgameName) {
-	return true;
-}
-

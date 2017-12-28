@@ -38,7 +38,6 @@ public:
 
 	void informPlayerGameCloses(int clientSocket);
 
-
 	map<string, vector<int> >* getGames();
 	bool isGameExist(string gameName);
 	int playersAmount(string gameName);
@@ -46,23 +45,23 @@ public:
 	void closeGames();
 
 	void RunGame(string& gameName);
-
-
-//	void RunGame(int clientSocket1 , int clientSocket2, string& gameName, map<string, vector<int> >& games);
+	~GameManager() {
+		delete this->games;
+		delete this->instance;
+	};
 
 private:
+	void refreshGameList();
+
 	GameManager(): games(new map<string, vector<int> >){}
 	map<string, vector<int> >* games;
 	static GameManager* instance;
 
 	bool is_client_closed(int cs);
-	bool isGameOnList(string& comgameName);
-	void closeGame(string& gameName, map<string, vector<int> >& games,  int waitingClient);
-	bool playTurn(vector<string>& args, int waitingClient);
-	bool handleOneClient(int clientSocket, int waitingclient, string& gameName, map<string, vector<int> >& games);
+	void closeGame(string& gameName);
+	bool playTurn(vector<string>& args, int waitingClient, int currentPlayer);
+	bool handleOneClient(int clientSocket, int waitingclient, string& gameName);
 };
-
-
 
 
 

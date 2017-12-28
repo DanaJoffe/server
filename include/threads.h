@@ -5,8 +5,11 @@
  *      Author: djoffe
  */
 
+
 #ifndef INCLUDE_THREADS_H_
 #define INCLUDE_THREADS_H_
+
+
 
 #include "CommandManager.h"
 
@@ -37,7 +40,9 @@ using namespace std;
 enum Status {NO_MOVES, HAS_MOVE, END};
 
 //extern
-static pthread_mutex_t map_mutex;
+
+//static
+extern pthread_mutex_t map_mutex;
 
 struct ThreadClientArgs {
   int clientSocketFirst;

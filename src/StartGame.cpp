@@ -8,20 +8,14 @@
 #include "StartGame.h"
 
 void StartGame::execute(vector<string>& args, int client_socket) {
-
   GameManager* gameManager = GameManager::getInstance();
-  map<string, vector<int> >& games = *gameManager->getGames();
-
-  //add game name to map with client_socket as player 1
-  vector<int> players_sockets;
-  players_sockets.push_back(client_socket);
-  pair<map<string, vector<int> >::iterator,bool> result;
+  int result;
   pthread_mutex_lock(&map_mutex);
-  result = games.insert(make_pair(args[0], players_sockets));
+  result = gameManager->addGame(args[0], client_socket);
   pthread_mutex_unlock(&map_mutex);
 
   int ret;
-  if (result.second == false) {
+  if (result < 0) {
     ret = -1;
   } else {
     ret = 1;
