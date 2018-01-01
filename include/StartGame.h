@@ -1,8 +1,8 @@
 /*
  * StartGame.h
  *
- *  Created on: Dec 22, 2017
- *      Author: chaviva
+ * Author1: name & ID: Dana Joffe 312129240
+ * Author2: name & ID: Chaviva Moshavi 322082892
  */
 
 #ifndef STARTGAME_H_

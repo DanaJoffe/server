@@ -1,8 +1,8 @@
 /*
  * threads.h
  *
- *  Created on: Dec 24, 2017
- *      Author: djoffe
+ * Author1: name & ID: Dana Joffe 312129240
+ * Author2: name & ID: Chaviva Moshavi 322082892
  */
 
 
@@ -38,20 +38,14 @@ using namespace std;
 
 enum Status {NO_MOVES, HAS_MOVE, END};
 
-//extern
-
-//static
 extern pthread_mutex_t map_mutex;
 
-struct ThreadClientArgs {
-  int clientSocketFirst;
-  int clientSocketSecond;
-  string gameName;
-  map<string, vector<int> >* games;
+//struct of parameters to pass to tReceivePlayers
+struct receiveClientsArgs {
+  int serverSocket;
 };
 
-
-struct ClientMapArgs {
+struct treatClientArgs {
   int clientSocket;
 };
 
@@ -71,7 +65,7 @@ bool readCommand(int socket, string* comName, vector<string>* args);
  * this function will be called in a new thread.
  * input: client socket
  */
-void* tTreatClient(void *clientMapArgs);
+void* tTreatClient(void* args);
 
 
 

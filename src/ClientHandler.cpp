@@ -1,17 +1,18 @@
 /*
  * ClientHandler.cpp
  *
- *  Created on: Dec 25, 2017
- *      Author: djoffe
+ * Author1: name & ID: Dana Joffe 312129240
+ * Author2: name & ID: Chaviva Moshavi 322082892
  */
 
 
 #include <ClientHandler.h>
 
+pthread_mutex_t threads_mutex;
 
-void* tRecievePlayers1(void* server_socket) {
-	int* serverSocketAdd = (int*)server_socket;
-	int serverSocket = *serverSocketAdd;
+void* tRecievePlayers(void* args) {
+  struct receiveClientsArgs* arguments = (struct receiveClientsArgs*)args;
+	int serverSocket = arguments->serverSocket;
 
 	ClientHandler handler = ClientHandler();
 
@@ -34,16 +35,13 @@ void* tRecievePlayers1(void* server_socket) {
 ClientHandler::ClientHandler() {}
 
 void ClientHandler::handle(int clientSocket) {
-	struct ClientMapArgs *clientMapArgs = new struct ClientMapArgs();
-	clientMapArgs->clientSocket = clientSocket;
-	pthread_t thread;
-	int rc = pthread_create(&thread, NULL, tTreatClient, clientMapArgs);
-	if (rc) {
-		cout << "Error: unable to create thread, " << rc << endl;
-		exit(-1);
-	}
+  pthread_t thread;
+  struct treatClientArgs* args = new struct treatClientArgs;
+  args->clientSocket = clientSocket;
+  int rc = pthread_create(&thread, NULL, tTreatClient, args);
+  if (rc) {
+    cout << "Error: unable to create thread, " << rc << endl;
+    exit(-1);
+  }
 	return;
 }
-
-
-

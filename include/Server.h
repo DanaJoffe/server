@@ -8,14 +8,11 @@
 #ifndef SERVER_H_
 #define SERVER_H_
 
+#include "threads.h"
 #include "ClientHandler.h"
 
 
-//using namespace std;
-
-
-
-/* ********NEED A FIX************
+/* ********NEED TO FIX************
  * Communication Protocol description:
  * the server works with 2 clients, and from each client it gets 2 messages maximum:
  * 1. the client status (integer)
@@ -49,6 +46,7 @@ public:
 private:
 	int port_;
 	int serverSocket_;
+	pthread_t thread_;
 };
 
 #endif /* SERVER_H_ */

@@ -1,8 +1,8 @@
 /*
  * threads.cpp
  *
- *  Created on: Dec 24, 2017
- *      Author: djoffe
+ * Author1: name & ID: Dana Joffe 312129240
+ * Author2: name & ID: Chaviva Moshavi 322082892
  */
 
 #include "threads.h"
@@ -18,7 +18,6 @@ bool readCommand(int socket, string* comName, vector<string>* args) {
 		return false;
 	}
 	if (n == 0) {
-		cout << "Client disconnected" << endl;
 		return false;
 	}
 
@@ -35,42 +34,36 @@ bool readCommand(int socket, string* comName, vector<string>* args) {
 	return true;
 }
 
-void* tTreatClient(void *clientMapArgs) {
-	struct ClientMapArgs *arguments = (struct ClientMapArgs  *)clientMapArgs;
-	int clientSocket = arguments->clientSocket;
+string readStringFromSocket(int length, int socket) {
+  string str;
+  int r;
+  char letter;
+  while (length >0) {
+    r = read(socket, &letter, sizeof(letter));
+    if (r == -1) {
+      cout << "readStringFromSocket: Error reading message" << endl;
+      return NULL;
+    }
+    str.append(1,letter);
+    length -= 1;
+  }
+  return str;
+}
 
-	// recieve command and arguments
+void* tTreatClient(void* arguments) {
+  struct treatClientArgs* args = (struct treatClientArgs*)arguments;
+
+	// receive command and arguments
 	string commandName;
-	vector<string> args;
-	bool b = readCommand(clientSocket, &commandName, &args);
+	vector<string> commandArgs;
+	bool b = readCommand(args->clientSocket, &commandName, &commandArgs);
 	if (b == false)
 		throw "Error reading from socket";
 
-	if (args.empty()) {
-		cout <<"args: none"<< endl;
-	} else {
-		cout <<"args: "<< args[0] << endl;
-	}
-
+	//execute command
 	CommandManager comManager;
-	comManager.executeCommand(commandName, args, clientSocket);
+	comManager.executeCommand(commandName, commandArgs, args->clientSocket);
 
-	delete arguments;
+	delete args;
 	return NULL;
-}
-
-string readStringFromSocket(int length, int socket) {
-	string str;
-	int r;
-	char letter;
-	while (length >0) {
-		r = read(socket, &letter, sizeof(letter));
-		if (r == -1) {
-			cout << "readStringFromSocket: Error reading message" << endl;
-			return NULL;
-		}
-		str.append(1,letter);
-		length -= 1;
-	}
-	return str;
 }

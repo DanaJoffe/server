@@ -1,8 +1,8 @@
 /*
  * Start.cpp
  *
- *  Created on: Dec 22, 2017
- *      Author: chaviva
+ * Author1: name & ID: Dana Joffe 312129240
+ * Author2: name & ID: Chaviva Moshavi 322082892
  */
 
 #include "StartGame.h"
@@ -10,9 +10,7 @@
 void StartGame::execute(vector<string>& args, int client_socket) {
   GameManager* gameManager = GameManager::getInstance();
   int result;
-  pthread_mutex_lock(&map_mutex);
-  result = gameManager->addGame(args[0], client_socket);
-  pthread_mutex_unlock(&map_mutex);
+  result = gameManager->addGameWithPlayer(args[0], client_socket);
 
   int ret;
   if (result < 0) {
@@ -20,7 +18,6 @@ void StartGame::execute(vector<string>& args, int client_socket) {
   } else {
     ret = 1;
   }
-  cout << "will write result of insert" << endl;
 
   //write to client if succeeded to start the game
   int n = write(client_socket, &ret, sizeof(ret));

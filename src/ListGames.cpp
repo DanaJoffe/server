@@ -1,8 +1,8 @@
 /*
  * ListGames.cpp
  *
- *  Created on: Dec 22, 2017
- *      Author: chaviva
+ * Author1: name & ID: Dana Joffe 312129240
+ * Author2: name & ID: Chaviva Moshavi 322082892
  */
 
 #include "ListGames.h"
@@ -10,9 +10,7 @@
 void ListGames::execute(vector<string>& args, int client_socket) {
   GameManager* gameManager = GameManager::getInstance();
 
-  pthread_mutex_lock(&map_mutex);
-  map<string, vector<int> >& game_list(*gameManager->getGames());//change
-  pthread_mutex_unlock(&map_mutex);
+  map<string, vector<int> > game_list(gameManager->getGames());
 
   //write string of available games to send to client
   stringstream available_games;
@@ -49,10 +47,6 @@ void ListGames::execute(vector<string>& args, int client_socket) {
     cout << "Error writing string size to socket" << endl;
   }
   //send string of available games
-
-  cout <<"ListGames::execute: sending to client: " <<msg;
-
-
   n = write(client_socket, msg.str().c_str(), size);
   if (n == -1) {
     cout << "Error writing available games to socket" << endl;

@@ -25,20 +25,18 @@ int main() {
   }
   port_file >> port_num;
   port_file.close();
-  //construct and run server
 
+  //construct and run server
   Server server(port_num);
-//  try {
-    server.start();
-//  } catch (const char *msg) {
-//    cout << "Cannot start server. Reason: " << msg << endl;
-//    exit(-1);
-//  }
+  server.start();
+
+
   //stop server
   server.stop();
 
   }catch (const char* msg) {
-	cout << msg << endl;
+    cout << msg << endl;
+    return -1;
   }
   return 0;
 }

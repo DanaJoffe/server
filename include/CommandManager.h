@@ -1,18 +1,16 @@
 /*
  * CommandManager.h
  *
- *  Created on: Dec 22, 2017
- *      Author: chaviva
+ * Author1: name & ID: Dana Joffe 312129240
+ * Author2: name & ID: Chaviva Moshavi 322082892
  */
 
 #ifndef COMMANDMANAGER_H_
 #define COMMANDMANAGER_H_
 
 #include "Command.h"
-#include "CloseGame.h"
 #include "JoinGame.h"
 #include "ListGames.h"
-#include "PlayTurn.h"
 #include "StartGame.h"
 
 #include <iostream>

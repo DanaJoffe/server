@@ -1,8 +1,8 @@
 /*
  * CommandManager.cpp
  *
- *  Created on: Dec 22, 2017
- *      Author: chaviva
+ * Author1: name & ID: Dana Joffe 312129240
+ * Author2: name & ID: Chaviva Moshavi 322082892
  */
 
 #include "CommandManager.h"
@@ -13,7 +13,8 @@ CommandManager::CommandManager() {
   commands_["join"] = new JoinGame();
 }
 
-void CommandManager::executeCommand(string command, vector<string>& args, int client_socket) {
+void CommandManager::executeCommand(string command, vector<string>& args,
+                                  int client_socket) {
   Command *cmd = commands_[command];
   cmd->execute(args, client_socket);
 }

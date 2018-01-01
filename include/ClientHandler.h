@@ -1,8 +1,8 @@
 /*
  * ClientHandler.h
  *
- *  Created on: Dec 25, 2017
- *      Author: djoffe
+ * Author1: name & ID: Dana Joffe 312129240
+ * Author2: name & ID: Chaviva Moshavi 322082892
  */
 
 #ifndef INCLUDE_CLIENTHANDLER_H_
@@ -10,16 +10,17 @@
 
 
 #include <map>
+#include <pthread.h>
 #include <vector>
 #include <string.h>
 #include <iostream>
 
-//#include "threads.h"
-#include "CommandManager.h"
-
+#include "GameManager.h"
+#include "threads.h"
 
 using namespace std;
 
+extern pthread_mutex_t threads_mutex;
 
 class ClientHandler {
 public:
@@ -42,8 +43,7 @@ public:
  * accepts new clients and sends them to client handler.
  * this function will be called in a new thread.
  */
-void* tRecievePlayers1(void* server_socket);
-
+void* tRecievePlayers(void* args);
 
 
 #endif /* INCLUDE_CLIENTHANDLER_H_ */
