@@ -49,6 +49,7 @@ void JoinGame::execute(vector<string>& args, int client_socket) {
 		  cout << "Error writing color to socket" << endl;
 		}
 
+		//*****************************new thread************************
 		//run game
 		gameManager->RunGame(game_name);
   }

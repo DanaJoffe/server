@@ -136,7 +136,7 @@ private:
 	/*
 	 * cancel all threads of current games.
 	 */
-	void closeGameThreads();
+  void closeGameThreads();
 
 	//data members
   map<string, vector<int> >* games;

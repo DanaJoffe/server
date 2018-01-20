@@ -47,9 +47,9 @@ void GameManager::refreshGameList() {
 	vector<int> clients;
 	unsigned i;
 
-  pthread_mutex_lock(&map_mutex);
+    pthread_mutex_lock(&map_mutex);
 	map<string, vector<int> > games_copy(*this->games);
-  pthread_mutex_unlock(&map_mutex);
+    pthread_mutex_unlock(&map_mutex);
 
 	for (it = games_copy.begin(); it!=games_copy.end(); ++it) {
 		clients = it->second;
@@ -201,15 +201,13 @@ vector<int> GameManager::getPlayers(const string& gameName) {
 }
 
 void GameManager::RunGame(const string& gameName) {
-
-
 	vector<int> clients = this->getPlayers(gameName);
 	if (clients.size() != 2) {
 		throw "Error in GameManager::RunGame. player is missing";
 	}
 
 	//save game thread
-  saveThreadOfGame(gameName);
+    saveThreadOfGame(gameName);
 
 	int clientSocket1 = clients[0];
 	int clientSocket2 = clients[1];
@@ -232,10 +230,10 @@ void GameManager::RunGame(const string& gameName) {
 }
 
 void GameManager::closeGames() {
-  closeGameThreads();
+    closeGameThreads();
 	map<string, vector<int> >::iterator it;
 	string gameName;
-  pthread_mutex_lock(&map_mutex);
+    pthread_mutex_lock(&map_mutex);
 	for (it = this->games->begin(); it!=this->games->end(); ++it) {
 		gameName = it->first;
 	  pthread_mutex_unlock(&map_mutex);
@@ -246,7 +244,6 @@ void GameManager::closeGames() {
 }
 
 void GameManager::closeGameThreads() {
-  int n;
   map<string, pthread_t>::iterator it;
   pthread_mutex_lock(&threads_lock);
   for (it = this->threads.begin(); it!=this->threads.end(); ++it) {

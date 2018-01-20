@@ -13,12 +13,15 @@ pthread_mutex_t threads_mutex;
 void* tRecievePlayers(void* args) {
   struct receiveClientsArgs* arguments = (struct receiveClientsArgs*)args;
 	int serverSocket = arguments->serverSocket;
-
+	//gets theads amount
+	//get the singelton
 	ClientHandler handler = ClientHandler();
 
 	// Define the client socket's structures
 	struct sockaddr_in clientAddress;
 	socklen_t clientAddressLen;
+
+	cout << "start func" <<endl;
 
 	while (true) {
 		cout << "Waiting for client connections..." << endl;
@@ -30,18 +33,29 @@ void* tRecievePlayers(void* args) {
 
 	    handler.handle(clientSocket);
 	}
+
+	cout << "finish func" <<endl;
 }
 
 ClientHandler::ClientHandler() {}
 
 void ClientHandler::handle(int clientSocket) {
+
+	//************************add task to the pool*********************
   pthread_t thread;
   struct treatClientArgs* args = new struct treatClientArgs;
   args->clientSocket = clientSocket;
   int rc = pthread_create(&thread, NULL, tTreatClient, args);
+  //******************************************************************
   if (rc) {
     cout << "Error: unable to create thread, " << rc << endl;
     exit(-1);
   }
 	return;
 }
+
+
+
+
+
+

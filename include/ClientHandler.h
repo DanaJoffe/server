@@ -22,6 +22,10 @@ using namespace std;
 
 extern pthread_mutex_t threads_mutex;
 
+
+
+
+
 class ClientHandler {
 public:
   /*
@@ -36,7 +40,9 @@ public:
 	/*
 	 * destructor
 	 */
-	~ClientHandler() {}
+	~ClientHandler() {
+		cout<<"delete handler"<<endl;
+	}
 };
 
 /*
@@ -44,6 +50,9 @@ public:
  * this function will be called in a new thread.
  */
 void* tRecievePlayers(void* args);
+
+
+
 
 
 #endif /* INCLUDE_CLIENTHANDLER_H_ */

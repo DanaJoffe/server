@@ -10,7 +10,7 @@
 #define MAX_CONNECTED_CLIENTS 10
 
 
-Server::Server(int port): port_(port), serverSocket_(0), thread_() {
+Server::Server(int port): port_(port), serverSocket_(0), thread_(0) {
   cout << "Server" << endl;
 }
 
@@ -37,18 +37,18 @@ void Server::start() {
 
   cout << "Enter exit to stop server." << endl << endl;
 
+  //send MAX_CONNECTED_CLIENTS
 	int rc = pthread_create(&thread_, NULL, tRecievePlayers, &args);
 	if (rc) {
 		cout << "Error: unable to create thread, " << rc << endl;
 		exit(-1);
 	}
-
-	//wait for "exit" command from console
-	string input = "";
-	while(strcmp(input.c_str(), "exit") != 0) {
-	  input = "";
-		getline(cin, input);
-	}
+    //wait for "exit" command from console
+    string input = "";
+    while(strcmp(input.c_str(), "exit") != 0) {
+  	  input = "";
+ 	  getline(cin, input);
+    }
 }
 
 void Server::stop() {
@@ -57,7 +57,7 @@ void Server::stop() {
   gm->closeGames();
   GameManager::destroyInstance();
   //close thread and server socket
-  pthread_cancel(thread_);
+    pthread_cancel(thread_);
   close(serverSocket_);
   cout << "Server stopped" << endl;
 }

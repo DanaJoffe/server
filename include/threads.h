@@ -13,7 +13,6 @@
 
 #include "CommandManager.h"
 
-
 #include <pthread.h>
 #include <cstdlib>
 #include <iostream>
