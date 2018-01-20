@@ -44,10 +44,6 @@ struct receiveClientsArgs {
   int serverSocket;
 };
 
-struct treatClientArgs {
-  int clientSocket;
-};
-
 /*
  * read string of specified length from socket.
  * input: length - length of string, socket - socket to read from.

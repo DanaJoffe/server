@@ -31,7 +31,7 @@ void* tRecievePlayers(void* args) {
 		if (clientSocket == -1)
 			throw "Error on accept";
 
-	    handler.handle(clientSocket);
+	    handler.handle(&clientSocket);
 	}
 
 	cout << "finish func" <<endl;
@@ -39,14 +39,19 @@ void* tRecievePlayers(void* args) {
 
 ClientHandler::ClientHandler() {}
 
-void ClientHandler::handle(int clientSocket) {
-
-	//************************add task to the pool*********************
+//void ClientHandler::handle(int clientSocket) {
+//
+//	//************************add task to the pool*********************
+//  pthread_t thread;
+//  struct treatClientArgs* args = new struct treatClientArgs;
+//  args->clientSocket = clientSocket;
+//  int rc = pthread_create(&thread, NULL, tTreatClient, args);
+//  //******************************************************************
+//
+//
+void ClientHandler::handle(int* clientSocket) {
   pthread_t thread;
-  struct treatClientArgs* args = new struct treatClientArgs;
-  args->clientSocket = clientSocket;
-  int rc = pthread_create(&thread, NULL, tTreatClient, args);
-  //******************************************************************
+  int rc = pthread_create(&thread, NULL, tTreatClient, clientSocket);
   if (rc) {
     cout << "Error: unable to create thread, " << rc << endl;
     exit(-1);

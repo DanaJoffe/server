@@ -36,7 +36,7 @@ public:
 	 *creates thread to treat client.
 	 *input: client's socket
 	 */
-	void handle(int clientSocket);
+	void handle(int* clientSocket);
 	/*
 	 * destructor
 	 */

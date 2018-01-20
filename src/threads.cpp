@@ -51,19 +51,17 @@ string readStringFromSocket(int length, int socket) {
 }
 
 void* tTreatClient(void* arguments) {
-  struct treatClientArgs* args = (struct treatClientArgs*)arguments;
-
+  int clientSocket = *(int*)arguments;
 	// receive command and arguments
 	string commandName;
 	vector<string> commandArgs;
-	bool b = readCommand(args->clientSocket, &commandName, &commandArgs);
+	bool b = readCommand(clientSocket, &commandName, &commandArgs);
 	if (b == false)
 		throw "Error reading from socket";
 
 	//execute command
 	CommandManager comManager;
-	comManager.executeCommand(commandName, commandArgs, args->clientSocket);
+	comManager.executeCommand(commandName, commandArgs, clientSocket);
 
-	delete args;
 	return NULL;
 }
