@@ -22,7 +22,7 @@ GameManager* GameManager::getInstance() {
   return instance;
 }
 
-GameManager::GameManager(): games(new map<string, vector<int> >) {};
+GameManager::GameManager(): games_(new map<string, vector<int> >) {};
 
 void GameManager::destroyInstance() {
   if (instance != 0) {
@@ -37,7 +37,7 @@ void GameManager::destroyInstance() {
 
 GameManager::~GameManager() {
   pthread_mutex_lock(&map_mutex);
-  delete games;
+  delete games_;
   pthread_mutex_unlock(&map_mutex);
 }
 
@@ -48,7 +48,7 @@ void GameManager::refreshGameList() {
 	unsigned i;
 
     pthread_mutex_lock(&map_mutex);
-	map<string, vector<int> > games_copy(*this->games);
+	map<string, vector<int> > games_copy(*this->games_);
     pthread_mutex_unlock(&map_mutex);
 
 	for (it = games_copy.begin(); it!=games_copy.end(); ++it) {
@@ -68,7 +68,7 @@ bool GameManager::doesGameExist(const string& gameName) {
 	map<string, vector<int> >::iterator it;
 
   pthread_mutex_lock(&map_mutex);
-	map<string, vector<int> > games_copy(*this->games);
+	map<string, vector<int> > games_copy(*this->games_);
   pthread_mutex_unlock(&map_mutex);
 
   //find game
@@ -96,7 +96,7 @@ int GameManager::playersAmount(const string& gameName) {
 	map<string, vector<int> >::iterator it;
 
   pthread_mutex_lock(&map_mutex);
-  map<string, vector<int> > games_copy(*this->games);
+  map<string, vector<int> > games_copy(*this->games_);
   pthread_mutex_unlock(&map_mutex);
 
   //find game
@@ -118,7 +118,7 @@ int GameManager::addGameWithPlayer(const string& gameName, int playerSocket) {
 
 	pair<map<string, vector<int> >::iterator,bool> result;
   pthread_mutex_lock(&map_mutex);
-	result = this->games->insert(make_pair(gameName, players_sockets));
+	result = this->games_->insert(make_pair(gameName, players_sockets));
 	if (result.second == false) {
 	   pthread_mutex_unlock(&map_mutex);
 	   return -1;
@@ -134,7 +134,7 @@ bool GameManager::addPlayerToGame(const string& gameName, int playerSocket) {
 	//game exists and has 1 player - add the second player
 	map<string, vector<int> >::iterator it;
   pthread_mutex_lock(&map_mutex);
-	it = this->games->find(gameName);
+	it = this->games_->find(gameName);
 	it->second.push_back(playerSocket);
   pthread_mutex_unlock(&map_mutex);
   return true;
@@ -151,13 +151,13 @@ void GameManager::deleteGame(const string& gameName) {
 	 map<string, pthread_t>::iterator it;
 	 //delete gameName from games
 	 pthread_mutex_lock(&map_mutex);
-	 this->games->erase(gameName);
+	 this->games_->erase(gameName);
    pthread_mutex_unlock(&map_mutex);
    //delete gameName from threads
    pthread_mutex_lock(&threads_lock);
-   it = threads.find(gameName);
-   if (it != threads.end()) {
-     this->threads.erase(gameName);
+   it = threads_.find(gameName);
+   if (it != threads_.end()) {
+     this->threads_.erase(gameName);
    }
    pthread_mutex_unlock(&threads_lock);
 }
@@ -184,7 +184,7 @@ void GameManager::informPlayerGameClosed(int clientSocket) {
 
 map<string, vector<int> > GameManager::getGames() {
 	this->refreshGameList();
-	map<string, vector<int> > games_copy(*this->games);
+	map<string, vector<int> > games_copy(*this->games_);
 	return games_copy;
 }
 
@@ -193,14 +193,14 @@ vector<int> GameManager::getPlayers(const string& gameName) {
   vector<int> players;
 	map<string, vector<int> >::iterator it;
   pthread_mutex_lock(&map_mutex);
-	it = this->games->find(gameName);
+	it = this->games_->find(gameName);
 	players = it->second;
   pthread_mutex_unlock(&map_mutex);
 	//return players
 	return players;
 }
 
-void GameManager::RunGame(const string& gameName) {
+void GameManager::runGame(const string& gameName) {
 	vector<int> clients = this->getPlayers(gameName);
 	if (clients.size() != 2) {
 		throw "Error in GameManager::RunGame. player is missing";
@@ -234,7 +234,7 @@ void GameManager::closeGames() {
 	map<string, vector<int> >::iterator it;
 	string gameName;
     pthread_mutex_lock(&map_mutex);
-	for (it = this->games->begin(); it!=this->games->end(); ++it) {
+	for (it = this->games_->begin(); it!=this->games_->end(); ++it) {
 		gameName = it->first;
 	  pthread_mutex_unlock(&map_mutex);
 		this->deleteGame(gameName);
@@ -246,7 +246,7 @@ void GameManager::closeGames() {
 void GameManager::closeGameThreads() {
   map<string, pthread_t>::iterator it;
   pthread_mutex_lock(&threads_lock);
-  for (it = this->threads.begin(); it!=this->threads.end(); ++it) {
+  for (it = this->threads_.begin(); it!=this->threads_.end(); ++it) {
     pthread_cancel(it->second);
   }
   pthread_mutex_unlock(&threads_lock);
@@ -254,7 +254,7 @@ void GameManager::closeGameThreads() {
 
 void GameManager::saveThreadOfGame(const string& gameName) {
   pthread_mutex_lock(&threads_lock);
-  threads[gameName] = pthread_self();
+  threads_[gameName] = pthread_self();
   pthread_mutex_unlock(&threads_lock);
 }
 

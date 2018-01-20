@@ -65,3 +65,43 @@ void* tTreatClient(void* arguments) {
 
 	return NULL;
 }
+
+void* tRunGame(void* gameName) {
+	string* game_name_ptr = (string*)gameName;
+	GameManager* gameManager = GameManager::getInstance();
+	string game_name = *game_name_ptr;
+	delete game_name_ptr;
+	gameManager->runGame(game_name);
+	return NULL;
+}
+
+void* tRecievePlayers(void* args) {
+  struct receiveClientsArgs* arguments = (struct receiveClientsArgs*)args;
+	int serverSocket = arguments->serverSocket;
+	//gets theads amount
+	//get the singelton
+
+	ClientHandler handler = ClientHandler();
+
+	// Define the client socket's structures
+	struct sockaddr_in clientAddress;
+	socklen_t clientAddressLen;
+
+	cout << "start func" <<endl;
+
+	while (true) {
+		cout << "Waiting for client connections..." << endl;
+		// Accept a new client connection
+		int clientSocket = accept(serverSocket, (struct sockaddr *)&clientAddress, &clientAddressLen);
+		cout << "Client connected" << endl;
+		if (clientSocket == -1)
+			throw "Error on accept";
+
+	    handler.handle(&clientSocket);
+	}
+
+	cout << "finish func" <<endl;
+}
+
+
+

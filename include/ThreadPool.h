@@ -11,6 +11,7 @@
 #include "Task.h"
 #include <queue>
 #include <pthread.h>
+using namespace std;
 
 class ThreadPool {
 public:
@@ -18,11 +19,12 @@ public:
   void addTask(Task *task);
   void terminate();
   virtual ~ThreadPool();
+  void executeTasks(); //was private originally
+
 
 private:
   queue<Task *> tasksQueue;
   pthread_t* threads;
-  void executeTasks();
   bool stopped;
   pthread_mutex_t lock;
   static void *execute(void* arg);
