@@ -34,6 +34,7 @@ void Server::start() {
 
 	struct receiveClientsArgs args;
 	args.serverSocket = serverSocket_;
+	args.thread_pool = thread_pool_;
 
   cout << "Enter exit to stop server." << endl << endl;
 

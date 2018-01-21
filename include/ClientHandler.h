@@ -17,6 +17,7 @@
 
 #include "GameManager.h"
 #include "threads.h"
+#include "ThreadPool.h"
 
 using namespace std;
 

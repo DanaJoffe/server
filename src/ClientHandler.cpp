@@ -13,6 +13,7 @@ pthread_mutex_t threads_mutex;
 void* tRecievePlayers(void* args) {
   struct receiveClientsArgs* arguments = (struct receiveClientsArgs*)args;
 	int serverSocket = arguments->serverSocket;
+	ThreadPool* threadPool = arguments->thread_pool;
 
 	ClientHandler handler = ClientHandler();
 

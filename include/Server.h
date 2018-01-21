@@ -10,6 +10,7 @@
 
 #include "threads.h"
 #include "ClientHandler.h"
+#include "ThreadPool.h"
 
 
 /* ********NEED TO FIX************
@@ -47,6 +48,7 @@ private:
 	int port_;
 	int serverSocket_;
 	pthread_t thread_;
+	ThreadPool* thread_pool_;
 };
 
 #endif /* SERVER_H_ */

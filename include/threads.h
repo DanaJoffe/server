@@ -12,6 +12,7 @@
 
 
 #include "CommandManager.h"
+#include "ThreadPool.h"
 
 
 #include <pthread.h>
@@ -43,6 +44,7 @@ extern pthread_mutex_t map_mutex;
 //struct of parameters to pass to tReceivePlayers
 struct receiveClientsArgs {
   int serverSocket;
+  ThreadPool* thread_pool;
 };
 
 /*
