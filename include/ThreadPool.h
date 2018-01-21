@@ -21,7 +21,6 @@ public:
   void terminate();
   virtual ~ThreadPool();
 
-
 private:
   void executeTasks();
   queue<Task *> tasksQueue;

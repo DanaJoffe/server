@@ -58,8 +58,13 @@ bool readCommand(int socket, string* comName, vector<string>* args);
  */
 void* tTreatClient(void* args);
 
+
 void* tRunGame(void* gameName);
 
+/*
+ * accepts new clients and sends them to client handler.
+ * this function will be called in a new thread.
+ */
 void* tRecievePlayers(void* args);
 
 #endif /* INCLUDE_THREADS_H_ */

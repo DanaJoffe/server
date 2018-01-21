@@ -47,13 +47,6 @@ private:
 
 };
 
-/*
- * accepts new clients and sends them to client handler.
- * this function will be called in a new thread.
- */
-//void* tRecievePlayers(void* args);
-
-
 
 
 

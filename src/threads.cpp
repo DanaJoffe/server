@@ -85,8 +85,6 @@ void* tRecievePlayers(void* args) {
 	struct sockaddr_in clientAddress;
 	socklen_t clientAddressLen;
 
-	cout << "start func" <<endl;
-
 	while (true) {
 		cout << "Waiting for client connections..." << endl;
 		// Accept a new client connection
@@ -97,8 +95,6 @@ void* tRecievePlayers(void* args) {
 
 	    handler.handle(&clientSocket);
 	}
-
-	cout << "finish func" <<endl;
 }
 
 

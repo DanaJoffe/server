@@ -7,7 +7,7 @@
 
 #include "Server.h"
 
-#define MAX_CONNECTED_CLIENTS 1
+#define MAX_CONNECTED_CLIENTS 10
 
 
 Server::Server(int port): port_(port), serverSocket_(0), thread_(0) {

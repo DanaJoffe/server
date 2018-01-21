@@ -33,7 +33,7 @@ void ThreadPool::executeTasks() {
 			tasksQueue.pop();
 			pthread_mutex_unlock(&lock);
 			task->execute();
-      delete task;
+			delete task;
 		} else {
 			pthread_mutex_unlock(&lock);
 			sleep(1);
@@ -42,7 +42,6 @@ void ThreadPool::executeTasks() {
 }
 
 void ThreadPool::terminate() {
-	pthread_mutex_destroy(&lock);
 	stopped = true;
 }
 ThreadPool::~ThreadPool() {
@@ -52,7 +51,6 @@ ThreadPool::~ThreadPool() {
     delete task;
   }
 	delete[] threads;
-	delete this;
 }
 
 
