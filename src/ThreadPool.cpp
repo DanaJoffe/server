@@ -1,8 +1,8 @@
 /*
  * ThreadPool.cpp
  *
- *  Created on: Jan 18, 2018
- *      Author: chaviva
+ * Author1: name & ID: Dana Joffe 312129240
+ * Author2: name & ID: Chaviva Moshavi 322082892
  */
 
 #include "ThreadPool.h"
@@ -25,6 +25,7 @@ void* ThreadPool::execute(void* arg) {
 void ThreadPool::addTask(Task *task) {
   tasksQueue.push(task);
 }
+
 void ThreadPool::executeTasks() {
 	while (!stopped) {
 		pthread_mutex_lock(&lock);
@@ -45,11 +46,14 @@ void ThreadPool::terminate() {
 	stopped = true;
 }
 ThreadPool::~ThreadPool() {
+  pthread_mutex_lock(&lock);
   while (!tasksQueue.empty()) {
     Task* task = tasksQueue.front();
     tasksQueue.pop();
     delete task;
   }
+  pthread_mutex_unlock(&lock);
+  pthread_mutex_destroy(&lock);
 	delete[] threads;
 }
 

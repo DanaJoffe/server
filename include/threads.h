@@ -38,8 +38,6 @@ using namespace std;
 
 enum Status {NO_MOVES, HAS_MOVE, END};
 
-extern pthread_mutex_t map_mutex;
-
 /*
  * read string of specified length from socket.
  * input: length - length of string, socket - socket to read from.
@@ -48,7 +46,7 @@ extern pthread_mutex_t map_mutex;
 string readStringFromSocket(int length, int socket);
 /*
  * read command from client. will read name of command and arguments of command.
- * ouput: true if succeeded, else false
+ * output: true if succeeded, else false
  */
 bool readCommand(int socket, string* comName, vector<string>* args);
 /*
@@ -58,10 +56,14 @@ bool readCommand(int socket, string* comName, vector<string>* args);
  */
 void* tTreatClient(void* args);
 
-
+/*
+ * run game with the name gameName
+ * intput: name of game
+ */
 void* tRunGame(void* gameName);
 
 /*
+ * input:args includes serversocket and threadpool
  * accepts new clients and sends them to client handler.
  * this function will be called in a new thread.
  */

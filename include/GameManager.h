@@ -144,6 +144,7 @@ private:
   static GameManager* instance;
   static pthread_mutex_t instance_lock;
   static pthread_mutex_t threads_lock;
+  static pthread_mutex_t map_mutex;
 };
 
 

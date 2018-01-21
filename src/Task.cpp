@@ -1,8 +1,8 @@
 /*
  * Task.cpp
  *
- *  Created on: Jan 18, 2018
- *      Author: chaviva
+ * Author1: name & ID: Dana Joffe 312129240
+ * Author2: name & ID: Chaviva Moshavi 322082892
  */
 
 #include "Task.h"

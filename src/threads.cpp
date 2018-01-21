@@ -7,8 +7,6 @@
 
 #include "threads.h"
 
-pthread_mutex_t map_mutex;
-
 bool readCommand(int socket, string* comName, vector<string>* args) {
 	int length;
 	// Read length
@@ -56,9 +54,9 @@ void* tTreatClient(void* arguments) {
 	string commandName;
 	vector<string> commandArgs;
 	bool b = readCommand(clientSocket, &commandName, &commandArgs);
-	if (b == false)
+	if (b == false) {
 		throw "Error reading from socket";
-
+	}
 	//execute command
 	CommandManager comManager;
 	comManager.executeCommand(commandName, commandArgs, clientSocket);
@@ -79,7 +77,7 @@ void* tRecievePlayers(void* args) {
   struct receiveClientsArgs* arguments = (struct receiveClientsArgs*)args;
 	int serverSocket = arguments->serverSocket;
 
-	ClientHandler handler = ClientHandler(arguments->pool);
+	ClientHandler handler = ClientHandler(arguments->thread_pool);
 
 	// Define the client socket's structures
 	struct sockaddr_in clientAddress;

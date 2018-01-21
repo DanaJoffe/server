@@ -1,8 +1,8 @@
 /*
  * structs.h
  *
- *  Created on: Jan 20, 2018
- *      Author: djoffe
+ * Author1: name & ID: Dana Joffe 312129240
+ * Author2: name & ID: Chaviva Moshavi 322082892
  */
 
 #ifndef INCLUDE_STRUCTS_H_
@@ -14,12 +14,7 @@
 //struct of parameters to pass to tReceivePlayers
 struct receiveClientsArgs {
   int serverSocket;
-//  ClientHandler handler;
-  ThreadPool * pool;
+  ThreadPool * thread_pool;
 };
-
-
-
-
 
 #endif /* INCLUDE_STRUCTS_H_ */

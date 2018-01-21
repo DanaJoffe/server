@@ -8,54 +8,10 @@
 
 #include <ClientHandler.h>
 
-//void* tRecievePlayers(void* args) {
-//  struct receiveClientsArgs* arguments = (struct receiveClientsArgs*)args;
-//	int serverSocket = arguments->serverSocket;
-//	//gets theads amount
-//	//get the singelton
-//
-//	ClientHandler handler = ClientHandler();
-//
-//	// Define the client socket's structures
-//	struct sockaddr_in clientAddress;
-//	socklen_t clientAddressLen;
-//
-//	cout << "start func" <<endl;
-//
-//	while (true) {
-//		cout << "Waiting for client connections..." << endl;
-//		// Accept a new client connection
-//		int clientSocket = accept(serverSocket, (struct sockaddr *)&clientAddress, &clientAddressLen);
-//		cout << "Client connected" << endl;
-//		if (clientSocket == -1)
-//			throw "Error on accept";
-//
-//	    handler.handle(&clientSocket);
-//	}
-//
-//	cout << "finish func" <<endl;
-//}
+ClientHandler::ClientHandler(ThreadPool* pool): thread_pool_(pool) {}
 
-ClientHandler::ClientHandler(ThreadPool* pool): pool_(pool) {}
-
-//void ClientHandler::handle(int clientSocket) {
-//
-//	//************************add task to the pool*********************
-//  pthread_t thread;
-//  struct treatClientArgs* args = new struct treatClientArgs;
-//  args->clientSocket = clientSocket;
-//  int rc = pthread_create(&thread, NULL, tTreatClient, args);
-//  //******************************************************************
-//
-//
 void ClientHandler::handle(int* clientSocket) {
-	this->pool_->addTask(new Task(tTreatClient, clientSocket));
-//  pthread_t thread;
-//  int rc = pthread_create(&thread, NULL, tTreatClient, clientSocket);
-//  if (rc) {
-//    cout << "Error: unable to create thread, " << rc << endl;
-//    exit(-1);
-//  }
+	this->thread_pool_->addTask(new Task(tTreatClient, clientSocket));
 	return;
 }
 
