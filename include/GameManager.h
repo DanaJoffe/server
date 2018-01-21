@@ -82,7 +82,7 @@ public:
 	 * run game
 	 * input: gameName - name of game to run.
 	 */
-	void RunGame(const string& gameName);
+	void runGame(const string& gameName);
 
 private:
   /*
@@ -136,11 +136,11 @@ private:
 	/*
 	 * cancel all threads of current games.
 	 */
-	void closeGameThreads();
+  void closeGameThreads();
 
 	//data members
-  map<string, vector<int> >* games;
-  map<string, pthread_t> threads;
+  map<string, vector<int> >* games_;
+  map<string, pthread_t> threads_;
   static GameManager* instance;
   static pthread_mutex_t instance_lock;
   static pthread_mutex_t threads_lock;

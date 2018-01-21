@@ -9,20 +9,20 @@
 
 void JoinGame::execute(vector<string>& args, int client_socket) {
   GameManager* gameManager = GameManager::getInstance();
-  string game_name = args[0];
+  string* game_name = new string(args[0].c_str());
   int result;
   vector<int> game_clients;
 
-  if (!gameManager->doesGameExist(game_name) || gameManager->playersAmount(game_name) != 1) {
+  if (!gameManager->doesGameExist(*game_name) || gameManager->playersAmount(*game_name) != 1) {
 	  result = -1;
   } else {
 	  result = 1;
 	  //add player to game
-		bool succeeded = gameManager->addPlayerToGame(game_name, client_socket);
+		bool succeeded = gameManager->addPlayerToGame(*game_name, client_socket);
 		if (!succeeded) {
 		  result = -1;
 		} else {
-	    game_clients = gameManager->getPlayers(game_name);
+	    game_clients = gameManager->getPlayers(*game_name);
 		}
   }
 
@@ -49,7 +49,13 @@ void JoinGame::execute(vector<string>& args, int client_socket) {
 		  cout << "Error writing color to socket" << endl;
 		}
 
+		//*****************************new thread************************
 		//run game
-		gameManager->RunGame(game_name);
+		pthread_t thread;
+		int rc = pthread_create(&thread, NULL, tRunGame, game_name);
+		if (rc) {
+		   cout << "Error: unable to create thread, " << rc << endl;
+		   exit(-1);
+		}
   }
 }

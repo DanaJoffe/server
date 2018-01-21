@@ -12,8 +12,8 @@
 
 
 #include "CommandManager.h"
-#include "ThreadPool.h"
-
+#include "structs.h"
+#include "ClientHandler.h"
 
 #include <pthread.h>
 #include <cstdlib>
@@ -33,19 +33,12 @@
 #include <map>
 
 
-
 using namespace std;
 
 
 enum Status {NO_MOVES, HAS_MOVE, END};
 
 extern pthread_mutex_t map_mutex;
-
-//struct of parameters to pass to tReceivePlayers
-struct receiveClientsArgs {
-  int serverSocket;
-  ThreadPool* thread_pool;
-};
 
 /*
  * read string of specified length from socket.
@@ -65,6 +58,8 @@ bool readCommand(int socket, string* comName, vector<string>* args);
  */
 void* tTreatClient(void* args);
 
+void* tRunGame(void* gameName);
 
+void* tRecievePlayers(void* args);
 
 #endif /* INCLUDE_THREADS_H_ */

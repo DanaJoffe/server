@@ -11,6 +11,7 @@
 #include "threads.h"
 #include "ClientHandler.h"
 #include "ThreadPool.h"
+#include "structs.h"
 
 
 /* ********NEED TO FIX************
@@ -45,10 +46,10 @@ public:
 	void stop();
 
 private:
+	ThreadPool* pool_;
 	int port_;
 	int serverSocket_;
 	pthread_t thread_;
-	ThreadPool* thread_pool_;
 };
 
 #endif /* SERVER_H_ */

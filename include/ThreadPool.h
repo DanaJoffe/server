@@ -12,6 +12,8 @@
 #include <queue>
 #include <pthread.h>
 
+using namespace std;
+
 class ThreadPool {
 public:
   ThreadPool(int threadsNum);
@@ -19,10 +21,11 @@ public:
   void terminate();
   virtual ~ThreadPool();
 
+
 private:
+  void executeTasks();
   queue<Task *> tasksQueue;
   pthread_t* threads;
-  void executeTasks();
   bool stopped;
   pthread_mutex_t lock;
   static void *execute(void* arg);
