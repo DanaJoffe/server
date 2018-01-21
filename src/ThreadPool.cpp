@@ -46,6 +46,7 @@ void ThreadPool::terminate() {
 }
 ThreadPool::~ThreadPool() {
 	delete[] threads;
+	delete this;
 }
 
 

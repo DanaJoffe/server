@@ -38,7 +38,7 @@ pthread_mutex_t threads_mutex;
 //	cout << "finish func" <<endl;
 //}
 
-ClientHandler::ClientHandler() {}
+ClientHandler::ClientHandler(ThreadPool* pool): pool_(pool) {}
 
 //void ClientHandler::handle(int clientSocket) {
 //
@@ -51,12 +51,13 @@ ClientHandler::ClientHandler() {}
 //
 //
 void ClientHandler::handle(int* clientSocket) {
-  pthread_t thread;
-  int rc = pthread_create(&thread, NULL, tTreatClient, clientSocket);
-  if (rc) {
-    cout << "Error: unable to create thread, " << rc << endl;
-    exit(-1);
-  }
+	this->pool_->addTask(new Task(tTreatClient, clientSocket));
+//  pthread_t thread;
+//  int rc = pthread_create(&thread, NULL, tTreatClient, clientSocket);
+//  if (rc) {
+//    cout << "Error: unable to create thread, " << rc << endl;
+//    exit(-1);
+//  }
 	return;
 }
 

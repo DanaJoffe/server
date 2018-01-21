@@ -10,6 +10,7 @@
 
 #include "threads.h"
 #include "ClientHandler.h"
+#include "ThreadPool.h"
 
 
 /* ********NEED TO FIX************
@@ -44,6 +45,8 @@ public:
 	void stop();
 
 private:
+	ThreadPool* pool_;
+
 	int port_;
 	int serverSocket_;
 	pthread_t thread_;

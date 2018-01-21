@@ -67,6 +67,6 @@ void* tTreatClient(void* args);
 
 void* tRunGame(void* gameName);
 
-
+void* tRecievePlayers(void* args);
 
 #endif /* INCLUDE_THREADS_H_ */

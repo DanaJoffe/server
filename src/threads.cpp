@@ -80,8 +80,9 @@ void* tRecievePlayers(void* args) {
 	int serverSocket = arguments->serverSocket;
 	//gets theads amount
 	//get the singelton
+//	ClientHandler* hand = arguments->handler;
 
-	ClientHandler handler = ClientHandler();
+	ClientHandler handler = ClientHandler(arguments->pool);
 
 	// Define the client socket's structures
 	struct sockaddr_in clientAddress;

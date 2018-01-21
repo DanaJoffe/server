@@ -31,7 +31,7 @@ public:
   /*
    * constructor.
    */
-	ClientHandler();
+	ClientHandler(ThreadPool* pool);
 	/*
 	 *creates thread to treat client.
 	 *input: client's socket
@@ -43,13 +43,16 @@ public:
 	~ClientHandler() {
 		cout<<"delete handler"<<endl;
 	}
+private:
+	ThreadPool* pool_;
+
 };
 
 /*
  * accepts new clients and sends them to client handler.
  * this function will be called in a new thread.
  */
-void* tRecievePlayers(void* args);
+//void* tRecievePlayers(void* args);
 
 
 
