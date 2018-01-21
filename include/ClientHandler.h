@@ -21,12 +21,6 @@
 
 using namespace std;
 
-extern pthread_mutex_t threads_mutex;
-
-
-
-
-
 class ClientHandler {
 public:
   /*
@@ -34,7 +28,7 @@ public:
    */
 	ClientHandler(ThreadPool* pool);
 	/*
-	 *creates thread to treat client.
+	 *creates task to treat client.
 	 *input: client's socket
 	 */
 	void handle(int* clientSocket);
@@ -43,17 +37,9 @@ public:
 	 */
 	~ClientHandler() {}
 private:
-	ThreadPool* pool_;
+	ThreadPool* thread_pool_;
 
 };
-
-/*
- * accepts new clients and sends them to client handler.
- * this function will be called in a new thread.
- */
-//void* tRecievePlayers(void* args);
-
-
 
 
 

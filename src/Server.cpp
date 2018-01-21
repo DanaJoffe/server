@@ -7,12 +7,12 @@
 
 #include "Server.h"
 
-#define MAX_CONNECTED_CLIENTS 1
+#define MAX_CONNECTED_CLIENTS 10
 
 
 Server::Server(int port): port_(port), serverSocket_(0), thread_(0) {
   cout << "Server" << endl;
-  this->pool_ = new ThreadPool(MAX_CONNECTED_CLIENTS);
+  this->thread_pool_ = new ThreadPool(MAX_CONNECTED_CLIENTS);
 }
 
 void Server::start() {
@@ -35,7 +35,7 @@ void Server::start() {
 
 	struct receiveClientsArgs args;
 	args.serverSocket = serverSocket_;
-	args.pool = pool_;
+	args.thread_pool = thread_pool_;
 
   cout << "Enter exit to stop server." << endl << endl;
 
@@ -58,11 +58,13 @@ void Server::stop() {
   GameManager* gm = GameManager::getInstance();
   gm->closeGames();
   GameManager::destroyInstance();
+  //close running threads in threadpool
   try {
-	  this->pool_->terminate();
+	  this->thread_pool_->terminate();
   } catch (const char* msg) {
 	  cout << msg << endl;
   }
+  delete thread_pool_;
   //close thread and server socket
     pthread_cancel(thread_);
   close(serverSocket_);

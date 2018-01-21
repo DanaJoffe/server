@@ -9,6 +9,7 @@
 
 pthread_mutex_t GameManager::instance_lock;
 pthread_mutex_t GameManager::threads_lock;
+pthread_mutex_t GameManager::map_mutex;
 GameManager* GameManager::instance = 0;
 
 GameManager* GameManager::getInstance() {
